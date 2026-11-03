@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Doxygen: Лабораторная работа №1 — Машина Поста (PostMachine)</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+    header { background: #0f172a; color: #f8fafc; padding: 24px 40px; border-bottom: 4px solid #3b82f6; }
+    header h1 { margin: 0 0 6px 0; font-size: 24px; }
+    header p { margin: 0; color: #94a3b8; font-size: 14px; }
+    main { max-width: 1080px; margin: 28px auto; padding: 0 24px 48px; }
+    .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+    h2 { color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-top: 0; }
+    h3 { color: #1d4ed8; margin-bottom: 6px; font-family: monospace; font-size: 16px; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13.5px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    th, td { border: 1px solid #cbd5e1; padding: 8px 12px; text-align: left; font-size: 14px; }
+    th { background: #f1f5f9; font-weight: 600; }
+    .tag { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Лабораторная работа №1: Машина Поста (PostMachine) — Версия 1.0</h1>
+    <p>Автоматическая документация Doxygen | Вариант 1.8 / 1.8.1 (C++17)</p>
+  </header>
+  <main>
+    <div class="card">
+      <h2>Архитектура классов (4 класса)</h2>
+      <table>
+        <thead>
+          <tr><th>Класс</th><th>Файлы</th><th>Назначение (@brief)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>PostTape</code></td><td><code>include/PostTape.h</code>, <code>src/PostTape.cpp</code></td><td>Бесконечная в обе стороны двоичная лента и каретка машины Поста (динамический массив <code>new bool[]</code>, операторы <code>++</code>/<code>--</code>, <code>[]</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>).</td></tr>
+          <tr><td><code>PostRule</code></td><td><code>include/PostRule.h</code>, <code>src/PostRule.cpp</code></td><td>Отдельное правило (команда) машины Поста: <code>V</code> (метка), <code>X</code> (стереть), <code>&gt;</code> (вправо), <code>&lt;</code> (влево), <code>?</code> (условный переход), <code>!</code> (останов).</td></tr>
+          <tr><td><code>PostProgram</code></td><td><code>include/PostProgram.h</code>, <code>src/PostProgram.cpp</code></td><td>Упорядоченный набор правил программы (динамический массив <code>new PostRule[]</code>, добавление <code>+=</code>, удаление <code>-=</code>, поиск <code>[]</code>, загрузка из потока).</td></tr>
+          <tr><td><code>PostMachine</code></td><td><code>include/PostMachine.h</code>, <code>src/PostMachine.cpp</code></td><td>Абстрактная машина Поста и её интерпретатор: пошаговое выполнение (<code>step</code> / <code>++</code>), полная интерпретация (<code>run</code>), загрузка из файла и режим <code>-log</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>
