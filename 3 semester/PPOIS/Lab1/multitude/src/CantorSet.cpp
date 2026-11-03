@@ -10,7 +10,6 @@
 
 #include <cctype>
 #include <sstream>
-#include <vector>
 
 // ============================================================================
 // Реализация внутренней структуры CantorSet::Element
@@ -517,7 +516,20 @@ void CantorSet::parseFromString(const std::string& str) {
     }
 
     // Разбиваем содержимое верхнего уровня по запятым (с учётом вложенности скобок)
-    std::vector<std::string> tokens;
+    CantorSet parsedResult;
+    auto addParsedToken = [&parsedResult, &str](const std::string& rawToken) {
+        std::string token = trim(rawToken);
+        if (token.empty()) {
+            throw std::invalid_argument("Empty element or trailing comma in set string: " + str);
+        }
+        if (token.front() == '{') {
+            CantorSet nested(token);
+            parsedResult.add(nested);
+        } else {
+            parsedResult.add(token);
+        }
+    };
+
     std::size_t tokenStart = 0;
     int depth = 0;
     for (std::size_t i = 0; i < inner.size(); ++i) {
@@ -527,30 +539,13 @@ void CantorSet::parseFromString(const std::string& str) {
         } else if (c == '}') {
             --depth;
         } else if (c == ',' && depth == 0) {
-            std::string part = trim(inner.substr(tokenStart, i - tokenStart));
-            if (part.empty()) {
-                throw std::invalid_argument("Empty element between commas in set string: " + str);
-            }
-            tokens.push_back(part);
+            addParsedToken(inner.substr(tokenStart, i - tokenStart));
             tokenStart = i + 1;
         }
     }
 
-    std::string lastPart = trim(inner.substr(tokenStart));
-    if (lastPart.empty()) {
-        throw std::invalid_argument("Trailing comma or empty element in set string: " + str);
-    }
-    tokens.push_back(lastPart);
-
-    for (std::size_t i = 0; i < tokens.size(); ++i) {
-        const std::string& tok = tokens[i];
-        if (tok.front() == '{') {
-            CantorSet nested(tok);
-            this->add(nested);
-        } else {
-            this->add(tok);
-        }
-    }
+    addParsedToken(inner.substr(tokenStart));
+    *this = parsedResult;
 }
 
 CantorSet CantorSet::fromString(const std::string& str) {
@@ -563,7 +558,7 @@ CantorSet CantorSet::fromString(const char* str) {
 
 bool CantorSet::isValidSetString(const std::string& str) {
     try {
-        CantorSet temp(str);
+        CantorSet validatedSet(str);
         return true;
     } catch (const std::invalid_argument&) {
         return false;
@@ -588,11 +583,11 @@ std::istream& operator>>(std::istream& is, CantorSet& set) {
         return is;
     }
 
-    std::string buffer;
-    buffer.push_back(ch);
+    std::string rawSetInput;
+    rawSetInput.push_back(ch);
     int depth = 1;
     while (depth > 0 && is.get(ch)) {
-        buffer.push_back(ch);
+        rawSetInput.push_back(ch);
         if (ch == '{') {
             ++depth;
         } else if (ch == '}') {
@@ -606,7 +601,7 @@ std::istream& operator>>(std::istream& is, CantorSet& set) {
     }
 
     try {
-        CantorSet parsed(buffer);
+        CantorSet parsed(rawSetInput);
         set = parsed;
     } catch (const std::invalid_argument&) {
         is.setstate(std::ios::failbit);

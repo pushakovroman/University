@@ -1,0 +1,35 @@
+name: PPOIS Lab 1 CI (Build, UnitTest++, Coverage & Doxygen)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (UnitTest++, Doxygen, lcov)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ libunittest++-dev doxygen lcov
+
+      - name: Build and test CantorSet (multitude) with coverage & Doxygen
+        working-directory: "3 semester/PPOIS/Lab1/multitude"
+        run: |
+          make all
+          make coverage
+          doxygen Doxyfile
+
+      - name: Build and test PostMachine (Post_machine) with coverage & Doxygen
+        working-directory: "3 semester/PPOIS/Lab1/Post_machine"
+        run: |
+          make all
+          make coverage
+          ./build/post_machine_app examples/increment_unary.txt -log
+          doxygen Doxyfile

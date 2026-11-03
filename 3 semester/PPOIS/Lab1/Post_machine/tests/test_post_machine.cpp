@@ -502,21 +502,21 @@ SUITE(PostMachineTests) {
 
     // 27. Загрузка PostMachine из файла и проверка ошибки при отсутствии файла
     TEST(MachineLoadFromFileAndMissingFileError) {
-        const std::string tempFile = "/tmp/test_post_machine_sample.txt";
+        const std::string sampleFilePath = "test_post_machine_sample.txt";
         {
-            std::ofstream ofs(tempFile);
+            std::ofstream ofs(sampleFilePath);
             ofs << "TAPE: [1]1\n"
                 << "1: X 2\n"
                 << "2: > 3\n"
                 << "3: !\n";
         }
         PostMachine machine;
-        machine.loadFromFile(tempFile);
+        machine.loadFromFile(sampleFilePath);
         machine.run();
         CHECK_EQUAL("0[1]", machine.tape().toString());
-        std::remove(tempFile.c_str());
+        std::remove(sampleFilePath.c_str());
 
-        CHECK_THROW(machine.loadFromFile("/tmp/non_existent_post_file_12345.txt"),
+        CHECK_THROW(machine.loadFromFile("non_existent_post_file_12345.txt"),
                     std::runtime_error);
     }
 
