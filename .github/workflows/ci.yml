@@ -1,4 +1,4 @@
-name: PPOIS Lab 1 CI (Build, UnitTest++, Coverage & Doxygen)
+name: PPOIS CI (Build, UnitTest++, Coverage & Doxygen)
 
 on:
   push:
@@ -32,4 +32,11 @@ jobs:
           make all
           make coverage
           ./build/post_machine_app examples/increment_unary.txt -log
+          doxygen Doxyfile
+
+      - name: Build and test Museum (Lab2) with coverage & Doxygen
+        working-directory: "3 semester/PPOIS/Lab2"
+        run: |
+          make all
+          make coverage
           doxygen Doxyfile

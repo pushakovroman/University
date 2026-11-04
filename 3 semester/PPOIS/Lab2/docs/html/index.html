@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Лабораторная работа №2: Информационная система «Музей» — Документация Doxygen</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 32px auto; max-width: 1020px; line-height: 1.55; color: #1f2937; }
+    h1, h2, h3 { color: #111827; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+    th, td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: left; }
+    th { background: #f3f4f6; }
+    code { background: #f3f4f6; padding: 2px 5px; border-radius: 4px; }
+    .badge { display: inline-block; background: #2563eb; color: #fff; padding: 3px 10px; border-radius: 12px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>Лабораторная работа №2: Информационная система «Музей» <span class="badge">Doxygen 1.9.8</span></h1>
+  <p>Объектно-ориентированная модель предметной области <strong>«Музей» (Museum)</strong> на языке C++17.</p>
+  <h2>Сводная статистика модели</h2>
+  <ul>
+    <li><strong>Доменных классов:</strong> 52 (плюс 13 собственных классов исключений = 65 классов)</li>
+    <li><strong>Полей:</strong> 259</li>
+    <li><strong>Содержательных методов (поведений):</strong> 175 (не считая геттеров и сеттеров)</li>
+    <li><strong>Межклассовых ассоциаций:</strong> 76</li>
+    <li><strong>Модульных тестов (UnitTest++):</strong> 32 (покрытие &gt; 95%)</li>
+  </ul>
+  <h2>Модули и заголовочные файлы</h2>
+  <table>
+    <tr><th>Заголовочный файл</th><th>Классы в модуле</th><th>Назначение</th></tr>
+    <tr><td><code>include/MuseumExceptions.h</code></td><td>13 классов исключений (<code>MuseumException</code> и наследники)</td><td>Обработка ошибок предметной области</td></tr>
+    <tr><td><code>include/Artifacts.h</code></td><td><code>Dimensions</code>, <code>HistoricalEra</code>, <code>ArtistProfile</code>, <code>Artifact</code>, <code>Painting</code>, <code>Sculpture</code>, <code>AncientManuscript</code>, <code>ArcheologicalFind</code></td><td>Экспонаты, авторы, эпохи и габариты</td></tr>
+    <tr><td><code>include/HallsAndClimate.h</code></td><td><code>ClimateSensor</code>, <code>ClimateControlUnit</code>, <code>DisplayCase</code>, <code>LightingSystem</code>, <code>ExhibitionHall</code>, <code>StorageVault</code></td><td>Выставочные залы, витрины, климат и фондохранилище</td></tr>
+    <tr><td><code>include/StorageAndLogistics.h</code></td><td><code>StorageRack</code>, <code>TransportCrate</code>, <code>PartnerMuseum</code>, <code>LoanAgreement</code>, <code>CatalogEntry</code>, <code>CollectionCatalog</code></td><td>Логистика, межмузейный обмен и главный каталог</td></tr>
+    <tr><td><code>include/ExhibitionsAndEvents.h</code></td><td><code>Exhibition</code>, <code>ExcursionRoute</code>, <code>GuidedTour</code>, <code>AudioGuideDevice</code>, <code>SpecialEvent</code>, <code>ExhibitionSchedule</code></td><td>Выставки, экскурсии, аудиогиды и расписание</td></tr>
+    <tr><td><code>include/VisitorsAndTickets.h</code></td><td><code>DiscountPolicy</code>, <code>Visitor</code>, <code>Ticket</code>, <code>MembershipCard</code>, <code>CloakroomTag</code>, <code>VisitorFeedback</code></td><td>Посетители, билеты, льготы, абонементы, гардероб</td></tr>
+    <tr><td><code>include/StaffAndHR.h</code></td><td><code>Employee</code>, <code>Curator</code>, <code>TourGuide</code>, <code>Restorer</code>, <code>SecurityGuard</code>, <code>HRDepartment</code></td><td>Персонал музея и отдел кадров</td></tr>
+    <tr><td><code>include/RestorationLab.h</code></td><td><code>RestorationMaterial</code>, <code>ConditionReport</code>, <code>RestorationTask</code>, <code>RestorationWorkshop</code></td><td>Реставрационная мастерская и диагностика</td></tr>
+    <tr><td><code>include/SecuritySystem.h</code></td><td><code>SecurityCamera</code>, <code>AlarmTrigger</code>, <code>AccessBadge</code>, <code>SecurityControlCenter</code></td><td>Видеонаблюдение, сигнализация, контроль доступа</td></tr>
+    <tr><td><code>include/FinanceAndShop.h</code></td><td><code>MuseumBudget</code>, <code>TicketOffice</code>, <code>DonationGrant</code>, <code>SouvenirItem</code>, <code>GiftShop</code>, <code>Museum</code></td><td>Финансы, касса, гранты, сувенирный магазин и комплекс Музея</td></tr>
+  </table>
+</body>
+</html>
