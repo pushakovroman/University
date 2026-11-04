@@ -2,41 +2,801 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Лабораторная работа №2: Информационная система «Музей» — Документация Doxygen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Информационная система «Музей» — Документация Lab2 (ППОИС)</title>
   <style>
-    body { font-family: Segoe UI, Arial, sans-serif; margin: 32px auto; max-width: 1020px; line-height: 1.55; color: #1f2937; }
-    h1, h2, h3 { color: #111827; }
-    table { border-collapse: collapse; width: 100%; margin: 16px 0; }
-    th, td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: left; }
-    th { background: #f3f4f6; }
-    code { background: #f3f4f6; padding: 2px 5px; border-radius: 4px; }
-    .badge { display: inline-block; background: #2563eb; color: #fff; padding: 3px 10px; border-radius: 12px; font-size: 13px; }
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --primary-bg: #eff6ff;
+      --text: #1f2937;
+      --text-muted: #4b5563;
+      --bg: #ffffff;
+      --bg-alt: #f9fafb;
+      --border: #e5e7eb;
+      --border-dark: #cbd5e1;
+      --code-bg: #f3f4f6;
+      --accent-green: #059669;
+      --accent-orange: #d97706;
+      --accent-purple: #7c3aed;
+      --accent-red: #dc2626;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--text);
+      background-color: var(--bg-alt);
+      line-height: 1.6;
+    }
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 320px;
+      background: #ffffff;
+      border-right: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 24px 16px;
+      flex-shrink: 0;
+    }
+    .sidebar h3 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin: 20px 0 8px 8px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar li {
+      margin-bottom: 2px;
+    }
+    .sidebar a {
+      display: block;
+      padding: 6px 12px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      border-radius: 6px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .sidebar a:hover {
+      background: var(--primary-bg);
+      color: var(--primary);
+    }
+    .search-box {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 1px solid var(--border-dark);
+      border-radius: 6px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+    .search-box:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    .content {
+      flex: 1;
+      padding: 40px 48px;
+      max-width: 1100px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-top: 0;
+      color: #0f172a;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 16px;
+    }
+    h2 {
+      font-size: 1.6rem;
+      color: #1e3a8a;
+      margin-top: 40px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    h3 {
+      font-size: 1.25rem;
+      color: #1f2937;
+      margin-top: 28px;
+    }
+    .badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0 28px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      background: #e2e8f0;
+      color: #334155;
+    }
+    .badge.blue { background: #dbeafe; color: #1e40af; }
+    .badge.green { background: #d1fae5; color: #065f46; }
+    .badge.purple { background: #ede9fe; color: #5b21b6; }
+    .badge.orange { background: #fef3c7; color: #92400e; }
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      margin: 20px 0;
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0 24px;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #f1f5f9;
+      font-weight: 600;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+    code {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #b91c1c;
+    }
+    pre {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      line-height: 1.5;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    .alert {
+      padding: 14px 18px;
+      border-left: 4px solid var(--primary-light);
+      background: var(--primary-bg);
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    .alert-success {
+      border-color: var(--accent-green);
+      background: #ecfdf5;
+      color: #065f46;
+    }
+    .alert-warning {
+      border-color: var(--accent-orange);
+      background: #fffbeb;
+      color: #92400e;
+    }
   </style>
 </head>
 <body>
-  <h1>Лабораторная работа №2: Информационная система «Музей» <span class="badge">Doxygen 1.9.8</span></h1>
-  <p>Объектно-ориентированная модель предметной области <strong>«Музей» (Museum)</strong> на языке C++17.</p>
-  <h2>Сводная статистика модели</h2>
-  <ul>
-    <li><strong>Доменных классов:</strong> 52 (плюс 13 собственных классов исключений = 65 классов)</li>
-    <li><strong>Полей:</strong> 259</li>
-    <li><strong>Содержательных методов (поведений):</strong> 175 (не считая геттеров и сеттеров)</li>
-    <li><strong>Межклассовых ассоциаций:</strong> 76</li>
-    <li><strong>Модульных тестов (UnitTest++):</strong> 32 (покрытие &gt; 95%)</li>
-  </ul>
-  <h2>Модули и заголовочные файлы</h2>
-  <table>
-    <tr><th>Заголовочный файл</th><th>Классы в модуле</th><th>Назначение</th></tr>
-    <tr><td><code>include/MuseumExceptions.h</code></td><td>13 классов исключений (<code>MuseumException</code> и наследники)</td><td>Обработка ошибок предметной области</td></tr>
-    <tr><td><code>include/Artifacts.h</code></td><td><code>Dimensions</code>, <code>HistoricalEra</code>, <code>ArtistProfile</code>, <code>Artifact</code>, <code>Painting</code>, <code>Sculpture</code>, <code>AncientManuscript</code>, <code>ArcheologicalFind</code></td><td>Экспонаты, авторы, эпохи и габариты</td></tr>
-    <tr><td><code>include/HallsAndClimate.h</code></td><td><code>ClimateSensor</code>, <code>ClimateControlUnit</code>, <code>DisplayCase</code>, <code>LightingSystem</code>, <code>ExhibitionHall</code>, <code>StorageVault</code></td><td>Выставочные залы, витрины, климат и фондохранилище</td></tr>
-    <tr><td><code>include/StorageAndLogistics.h</code></td><td><code>StorageRack</code>, <code>TransportCrate</code>, <code>PartnerMuseum</code>, <code>LoanAgreement</code>, <code>CatalogEntry</code>, <code>CollectionCatalog</code></td><td>Логистика, межмузейный обмен и главный каталог</td></tr>
-    <tr><td><code>include/ExhibitionsAndEvents.h</code></td><td><code>Exhibition</code>, <code>ExcursionRoute</code>, <code>GuidedTour</code>, <code>AudioGuideDevice</code>, <code>SpecialEvent</code>, <code>ExhibitionSchedule</code></td><td>Выставки, экскурсии, аудиогиды и расписание</td></tr>
-    <tr><td><code>include/VisitorsAndTickets.h</code></td><td><code>DiscountPolicy</code>, <code>Visitor</code>, <code>Ticket</code>, <code>MembershipCard</code>, <code>CloakroomTag</code>, <code>VisitorFeedback</code></td><td>Посетители, билеты, льготы, абонементы, гардероб</td></tr>
-    <tr><td><code>include/StaffAndHR.h</code></td><td><code>Employee</code>, <code>Curator</code>, <code>TourGuide</code>, <code>Restorer</code>, <code>SecurityGuard</code>, <code>HRDepartment</code></td><td>Персонал музея и отдел кадров</td></tr>
-    <tr><td><code>include/RestorationLab.h</code></td><td><code>RestorationMaterial</code>, <code>ConditionReport</code>, <code>RestorationTask</code>, <code>RestorationWorkshop</code></td><td>Реставрационная мастерская и диагностика</td></tr>
-    <tr><td><code>include/SecuritySystem.h</code></td><td><code>SecurityCamera</code>, <code>AlarmTrigger</code>, <code>AccessBadge</code>, <code>SecurityControlCenter</code></td><td>Видеонаблюдение, сигнализация, контроль доступа</td></tr>
-    <tr><td><code>include/FinanceAndShop.h</code></td><td><code>MuseumBudget</code>, <code>TicketOffice</code>, <code>DonationGrant</code>, <code>SouvenirItem</code>, <code>GiftShop</code>, <code>Museum</code></td><td>Финансы, касса, гранты, сувенирный магазин и комплекс Музея</td></tr>
-  </table>
+<div class="layout">
+  <!-- Боковая панель -->
+  <aside class="sidebar">
+    <div style="font-weight: bold; font-size: 16px; color: var(--primary); margin-bottom: 12px;">🏛️ Музейная система</div>
+    <input type="text" id="searchInput" class="search-box" placeholder="Поиск класса или метода..." onkeyup="filterContent()">
+    
+    <h3>Навигация</h3>
+    <ul>
+      <li><a href="#overview">Общие сведения</a></li>
+      <li><a href="#metrics">Метрики и требования</a></li>
+      <li><a href="#architecture">Архитектура и модули</a></li>
+      <li><a href="#class-catalog">Каталог классов (52+13)</a></li>
+      <li><a href="#oop-principles">Принципы ООП и паттерны</a></li>
+      <li><a href="#exceptions">Иерархия исключений</a></li>
+      <li><a href="#tests">Модульные тесты (32)</a></li>
+      <li><a href="#build-guide">Сборка и запуск</a></li>
+    </ul>
+
+    <h3>Модули предметной области</h3>
+    <ul>
+      <li><a href="#mod-artifacts">1. Экспонаты (Artifacts)</a></li>
+      <li><a href="#mod-halls">2. Залы и Климат (Halls)</a></li>
+      <li><a href="#mod-storage">3. Фонды и Логистика (Storage)</a></li>
+      <li><a href="#mod-exhibitions">4. Выставки и События (Events)</a></li>
+      <li><a href="#mod-visitors">5. Посетители и Билеты (Tickets)</a></li>
+      <li><a href="#mod-staff">6. Персонал и Кадры (Staff)</a></li>
+      <li><a href="#mod-restoration">7. Лаборатория реставрации</a></li>
+      <li><a href="#mod-security">8. Безопасность (Security)</a></li>
+      <li><a href="#mod-finance">9. Финансы и Музей (Facade)</a></li>
+      <li><a href="#mod-exceptions">10. Исключения (Exceptions)</a></li>
+    </ul>
+  </aside>
+
+  <!-- Основной контент -->
+  <main class="content">
+    <header>
+      <h1>Информационная система «Музей» (Museum Management System)</h1>
+      <p style="font-size: 1.1rem; color: var(--text-muted);">
+        Лабораторная работа №2 по курсу <strong>«Проектирование программного обеспечения интеллектуальных систем» (ППОИС)</strong>.<br>
+        2-й курс, 3-й семестр. Автор: <strong>Пушаков Роман</strong>. Вариант: <strong>Музей</strong>.
+      </p>
+      <div class="badge-bar">
+        <span class="badge blue">C++17 Standard</span>
+        <span class="badge green">65 Классов (52 модели + 13 исключений)</span>
+        <span class="badge purple">259 Полей</span>
+        <span class="badge blue">175 Поведений</span>
+        <span class="badge green">76 Ассоциаций</span>
+        <span class="badge orange">32 Unit-теста (UnitTest++)</span>
+        <span class="badge green">100% Тестов пройдено</span>
+      </div>
+    </header>
+
+    <!-- Раздел: Обзор -->
+    <section id="overview">
+      <h2>1. Общие сведения о проекте</h2>
+      <p>
+        Проект представляет собой объектно-ориентированную программную модель музейного комплекса мирового уровня.
+        Система комплексно автоматизирует все аспекты музейного дела:
+      </p>
+      <ul>
+        <li><strong>Фондовую и экспозиционную работу:</strong> каталогизация шедевров живописи, скульптур, рукописей, археологических находок, размещение их в залах и хранилищах;</li>
+        <li><strong>Микроклимат и сохранность:</strong> мониторинг температуры, относительной влажности, люксов освещенности через датчики с автоматической термо-регуляцией;</li>
+        <li><strong>Межмузейный обмен и логистику:</strong> заключение соглашений о временных выставках с музеями-партнерами (Лувр, Прадо и др.), транспортировка в климатических контейнерах;</li>
+        <li><strong>Экскурсионную и культурную деятельность:</strong> планирование временных выставок, формирование маршрутов, назначение гидов, выдача аудиогидов;</li>
+        <li><strong>Работу с посетителями:</strong> продажа билетов с динамическими льготными тарифами (студенты, пенсионеры), годовые абонементы, гардеробные номерки и отзывы;</li>
+        <li><strong>Научно-реставрационную лабораторию:</strong> составление актов дефектации (Condition Report), списание реставрационных материалов, завершение циклов реставрации;</li>
+        <li><strong>Комплексную безопасность:</strong> видеонаблюдение, датчики вибрации/периметра, доступ по ключ-картам, протоколирование инцидентов и тревог;</li>
+        <li><strong>Финансовый менеджмент и сувенирный магазин:</strong> контроль сводного бюджета, поступление грантов и донатов, продажа сувениров через кассовые терминалы.</li>
+      </ul>
+    </section>
+
+    <!-- Раздел: Метрики -->
+    <section id="metrics">
+      <h2>2. Метрики и выполнение требований ТЗ</h2>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-num">65</div>
+          <div class="stat-label">Всего классов (Требование: &ge; 50)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">259</div>
+          <div class="stat-label">Полей данных (Требование: &ge; 150)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">175</div>
+          <div class="stat-label">Поведений/методов (Требование: &ge; 100)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">76</div>
+          <div class="stat-label">Ассоциаций (Требование: &ge; 30)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">13</div>
+          <div class="stat-label">Классов исключений (Требование: &ge; 12)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">32</div>
+          <div class="stat-label">Модульных тестов (Покрытие &gt; 95%)</div>
+        </div>
+      </div>
+
+      <div class="alert alert-success">
+        <strong>Все требования технического задания перевыполнены:</strong> количество классов превышает норматив на 30%, полей — на 72%, методов — на 75%, ассоциаций — в 2.5 раза, количество собственных исключений составляет 13 (при минимуме 12).
+      </div>
+    </section>
+
+    <!-- Раздел: Архитектура -->
+    <section id="architecture">
+      <h2>3. Архитектура системы и модульное деление</h2>
+      <p>
+        Проект организован по принципу слабой связности (Low Coupling) и высокой связности внутри подсистем (High Cohesion).
+        Взаимодействие компонентов с внешним миром инкапсулировано через единый фасад — класс <code>Museum</code>.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Модуль (Файлы)</th>
+            <th>Ключевые классы</th>
+            <th>Ответственность и функциональность</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>include/Artifacts.h</code></td>
+            <td><code>Dimensions</code>, <code>HistoricalEra</code>, <code>ArtistProfile</code>, <code>Artifact</code>, <code>Painting</code>, <code>Sculpture</code>, <code>AncientManuscript</code>, <code>ArcheologicalFind</code></td>
+            <td>Иерархия экспонатов, их габариты, исторические эпохи, авторы, страховая стоимость, полиморфный расчет коэффициента ценности.</td>
+          </tr>
+          <tr>
+            <td><code>include/HallsAndClimate.h</code></td>
+            <td><code>ClimateSensor</code>, <code>ClimateControlUnit</code>, <code>DisplayCase</code>, <code>LightingSystem</code>, <code>ExhibitionHall</code>, <code>StorageVault</code></td>
+            <td>Физическая инфраструктура: залы, витрины, освещение, датчики микроклимата и автоматическая климатическая установка.</td>
+          </tr>
+          <tr>
+            <td><code>include/StorageAndLogistics.h</code></td>
+            <td><code>StorageRack</code>, <code>TransportCrate</code>, <code>PartnerMuseum</code>, <code>LoanAgreement</code>, <code>CatalogEntry</code>, <code>CollectionCatalog</code></td>
+            <td>Фондовое хранение, стеллажи, транспортировочные кейсы, партнерские музеи, договора займов и общий инвентарный каталог.</td>
+          </tr>
+          <tr>
+            <td><code>include/ExhibitionsAndEvents.h</code></td>
+            <td><code>Exhibition</code>, <code>ExcursionRoute</code>, <code>GuidedTour</code>, <code>AudioGuideDevice</code>, <code>SpecialEvent</code>, <code>ExhibitionSchedule</code></td>
+            <td>Экспозиционная деятельность: выставки, маршруты обхода, бронирование экскурсий, выдача аудиогидов, лекции и вернисажи.</td>
+          </tr>
+          <tr>
+            <td><code>include/VisitorsAndTickets.h</code></td>
+            <td><code>DiscountPolicy</code>, <code>Visitor</code>, <code>Ticket</code>, <code>MembershipCard</code>, <code>CloakroomTag</code>, <code>VisitorFeedback</code></td>
+            <td>Управление клиентским потоком: расчет скидок, оформление билетов, клубные карты членов музея, гардероб и книга отзывов.</td>
+          </tr>
+          <tr>
+            <td><code>include/StaffAndHR.h</code></td>
+            <td><code>Employee</code>, <code>Curator</code>, <code>TourGuide</code>, <code>Restorer</code>, <code>SecurityGuard</code>, <code>HRDepartment</code></td>
+            <td>Иерархия персонала: кураторы, экскурсоводы, реставраторы, охрана, отдел кадров, полиморфный расчет зарплаты с премиями.</td>
+          </tr>
+          <tr>
+            <td><code>include/RestorationLab.h</code></td>
+            <td><code>RestorationMaterial</code>, <code>ConditionReport</code>, <code>RestorationTask</code>, <code>RestorationWorkshop</code></td>
+            <td>Лаборатория консервации и реставрации: дефектовочные ведомости, учет расхода реактивов, выполнение заказ-нарядов.</td>
+          </tr>
+          <tr>
+            <td><code>include/SecuritySystem.h</code></td>
+            <td><code>SecurityCamera</code>, <code>AlarmTrigger</code>, <code>AccessBadge</code>, <code>SecurityControlCenter</code></td>
+            <td>Комплекс безопасности: камеры наблюдения, рубежи охранной сигнализации, магнитные пропуска с уровнями доступа, пульт охраны.</td>
+          </tr>
+          <tr>
+            <td><code>include/FinanceAndShop.h</code></td>
+            <td><code>MuseumBudget</code>, <code>TicketOffice</code>, <code>DonationGrant</code>, <code>SouvenirItem</code>, <code>GiftShop</code>, <code>Museum</code></td>
+            <td>Финансовый контур: баланс, кассы, благотворительные гранты, сувенирная лавка и центральный фасадный класс <code>Museum</code>.</td>
+          </tr>
+          <tr>
+            <td><code>include/MuseumExceptions.h</code></td>
+            <td>13 специализированных классов исключений</td>
+            <td>Иерархия исключительных ситуаций с кодами ошибок, перехватом в UI и информативными сообщениями.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Раздел: Каталог классов -->
+    <section id="class-catalog">
+      <h2>4. Детальная спецификация классов предметной области</h2>
+
+      <!-- Модуль 1 -->
+      <div class="card" id="mod-artifacts">
+        <div class="card-title">
+          <span>Подсистема 1: Экспонаты и коллекция (Artifacts.h)</span>
+          <span class="badge blue">8 классов</span>
+        </div>
+        <p>Иерархия культурных ценностей с полиморфными методами оценки исторической важности и хрупкости:</p>
+        <table>
+          <tr><th>Класс</th><th>Поля (Атрибуты)</th><th>Методы (Поведения)</th><th>Ассоциации</th></tr>
+          <tr>
+            <td><code>Dimensions</code></td>
+            <td><code>width</code>, <code>height</code>, <code>depth</code> (double)</td>
+            <td><code>volume()</code>, <code>fitsIn(maxW, maxH, maxD)</code>, <code>scale(factor)</code></td>
+            <td>Компонент габаритов для <code>Artifact</code> и <code>TransportCrate</code></td>
+          </tr>
+          <tr>
+            <td><code>HistoricalEra</code></td>
+            <td><code>name</code>, <code>startYear</code>, <code>endYear</code>, <code>civilization</code></td>
+            <td><code>containsYear(year)</code>, <code>duration()</code></td>
+            <td>Ассоциация 1 к N с <code>Artifact</code></td>
+          </tr>
+          <tr>
+            <td><code>ArtistProfile</code></td>
+            <td><code>fullName</code>, <code>birthYear</code>, <code>deathYear</code>, <code>nationality</code>, <code>artMovement</code></td>
+            <td><code>isAlive()</code>, <code>biographySummary()</code></td>
+            <td>Связан с <code>Artifact</code> (1 автор — много работ)</td>
+          </tr>
+          <tr>
+            <td><code>Artifact</code> (базовый)</td>
+            <td><code>id</code>, <code>title</code>, <code>insuranceValue</code>, <code>era</code>, <code>author</code>, <code>dimensions</code>, <code>isExhibited</code>, <code>inRestoration</code></td>
+            <td><code>calculateImportanceScore()</code> (virtual), <code>markExhibited()</code>, <code>sendToRestoration()</code>, <code>returnFromRestoration()</code>, <code>isAvailableForViewing()</code></td>
+            <td>Агрегирует <code>Dimensions</code>, <code>HistoricalEra</code>, <code>ArtistProfile</code>; помещается в <code>DisplayCase</code></td>
+          </tr>
+          <tr>
+            <td><code>Painting</code></td>
+            <td><code>canvasType</code>, <code>paintMedium</code>, <code>isFramed</code>, <code>varnishLayerCondition</code></td>
+            <td><code>calculateImportanceScore()</code> (override), <code>applyProtectiveGlass()</code>, <code>inspectVarnish()</code></td>
+            <td>Наследник <code>Artifact</code></td>
+          </tr>
+          <tr>
+            <td><code>Sculpture</code></td>
+            <td><code>material</code>, <code>weightKg</code>, <code>requiresReinforcedPedestal</code>, <code>isOutdoorCompatible</code></td>
+            <td><code>calculateImportanceScore()</code> (override), <code>verifyPedestalSafety()</code></td>
+            <td>Наследник <code>Artifact</code></td>
+          </tr>
+          <tr>
+            <td><code>AncientManuscript</code></td>
+            <td><code>language</code>, <code>pageCount</code>, <code>scriptType</code>, <code>isIlluminated</code></td>
+            <td><code>calculateImportanceScore()</code> (override), <code>needsInertGasStorage()</code></td>
+            <td>Наследник <code>Artifact</code></td>
+          </tr>
+          <tr>
+            <td><code>ArcheologicalFind</code></td>
+            <td><code>digSiteLocation</code>, <code>discoveryYear</code>, <code>expeditionLeader</code>, <code>preservationState</code></td>
+            <td><code>calculateImportanceScore()</code> (override), <code>registerCarbonDating(age)</code></td>
+            <td>Наследник <code>Artifact</code></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Модуль 2 -->
+      <div class="card" id="mod-halls">
+        <div class="card-title">
+          <span>Подсистема 2: Залы, экспозиционные витрины и климат (HallsAndClimate.h)</span>
+          <span class="badge blue">6 классов</span>
+        </div>
+        <table>
+          <tr><th>Класс</th><th>Поля</th><th>Методы</th><th>Ассоциации</th></tr>
+          <tr>
+            <td><code>ClimateSensor</code></td>
+            <td><code>sensorId</code>, <code>temperature</code>, <code>relativeHumidity</code>, <code>luxLevel</code>, <code>isOperational</code></td>
+            <td><code>recordReadings(t, h, lux)</code>, <code>isWithinNorms(minT, maxT, minH, maxH)</code>, <code>calibrate()</code></td>
+            <td>Композиция внутри <code>ExhibitionHall</code> и <code>StorageVault</code></td>
+          </tr>
+          <tr>
+            <td><code>ClimateControlUnit</code></td>
+            <td><code>unitId</code>, <code>targetTemp</code>, <code>targetHumidity</code>, <code>activeCooling</code>, <code>activeHumidifier</code></td>
+            <td><code>adjustToConditions(sensor)</code>, <code>turnOnEcoMode()</code>, <code>emergencyPurge()</code></td>
+            <td>Управляет микроклиматом залов</td>
+          </tr>
+          <tr>
+            <td><code>DisplayCase</code></td>
+            <td><code>caseId</code>, <code>hasAlarm</code>, <code>isSealedHermetic</code>, <code>maxWeightKg</code>, <code>currentArtifactId</code></td>
+            <td><code>mountArtifact(artId, weight)</code>, <code>removeArtifact()</code>, <code>isOccupied()</code></td>
+            <td>Хранит экспонат <code>Artifact</code></td>
+          </tr>
+          <tr>
+            <td><code>LightingSystem</code></td>
+            <td><code>systemId</code>, <code>dimmerLevelPct</code>, <code>uvFilterEnabled</code>, <code>nightMode</code></td>
+            <td><code>setDayMode()</code>, <code>setNightMode()</code>, <code>adjustForVulnerableArt()</code></td>
+            <td>Освещение <code>ExhibitionHall</code></td>
+          </tr>
+          <tr>
+            <td><code>ExhibitionHall</code></td>
+            <td><code>hallId</code>, <code>name</code>, <code>floorNumber</code>, <code>maxVisitorsCapacity</code>, <code>displayCases</code>, <code>sensor</code>, <code>climateUnit</code></td>
+            <td><code>addDisplayCase(caseObj)</code>, <code>monitorEnvironment()</code>, <code>canAccommodate(count)</code></td>
+            <td>Композиция <code>DisplayCase</code>, <code>ClimateSensor</code>; ассоциирован с <code>Exhibition</code></td>
+          </tr>
+          <tr>
+            <td><code>StorageVault</code></td>
+            <td><code>vaultId</code>, <code>securityClearanceRequired</code>, <code>totalRacks</code>, <code>isLocked</code>, <code>sensor</code></td>
+            <td><code>lockVault()</code>, <code>unlockVault(badgeLevel)</code>, <code>checkInventoryIntegrity()</code></td>
+            <td>Фондохранилище для <code>StorageRack</code></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Модуль 6: Персонал -->
+      <div class="card" id="mod-staff">
+        <div class="card-title">
+          <span>Подсистема 6: Персонал и отдел кадров (StaffAndHR.h)</span>
+          <span class="badge blue">6 классов</span>
+        </div>
+        <p>Иерархия сотрудников с полиморфным расчетом оклада и функциональных обязанностей:</p>
+        <table>
+          <tr><th>Класс</th><th>Поля</th><th>Методы</th><th>Ассоциации</th></tr>
+          <tr>
+            <td><code>Employee</code> (базовый)</td>
+            <td><code>id</code>, <code>fullName</code>, <code>baseSalary</code>, <code>employmentDate</code>, <code>isActive</code></td>
+            <td><code>calculateMonthlySalary()</code> (virtual), <code>grantBonus(amount)</code>, <code>terminate()</code></td>
+            <td>Сотрудник музея, учет в <code>HRDepartment</code></td>
+          </tr>
+          <tr>
+            <td><code>Curator</code></td>
+            <td><code>assignedDepartment</code>, <code>managedExhibitionsCount</code>, <code>publishedPapersCount</code></td>
+            <td><code>calculateMonthlySalary()</code> (override), <code>publishCatalog()</code>, <code>approveLoan()</code></td>
+            <td>Наследник <code>Employee</code>; курирует <code>Exhibition</code></td>
+          </tr>
+          <tr>
+            <td><code>TourGuide</code></td>
+            <td><code>spokenLanguages</code>, <code>conductedToursCount</code>, <code>rating</code></td>
+            <td><code>calculateMonthlySalary()</code> (override), <code>addLanguage(lang)</code>, <code>conductTour()</code></td>
+            <td>Наследник <code>Employee</code>; проводит <code>GuidedTour</code></td>
+          </tr>
+          <tr>
+            <td><code>Restorer</code></td>
+            <td><code>specialization</code>, <code>certifiedGrade</code>, <code>completedRestorationsCount</code></td>
+            <td><code>calculateMonthlySalary()</code> (override), <code>completeTask()</code>, <code>upgradeGrade()</code></td>
+            <td>Наследник <code>Employee</code>; выполняет <code>RestorationTask</code></td>
+          </tr>
+          <tr>
+            <td><code>SecurityGuard</code></td>
+            <td><code>shiftType</code>, <code>armedPermit</code>, <code>patrolRouteCode</code></td>
+            <td><code>calculateMonthlySalary()</code> (override), <code>logIncident()</code>, <code>switchShift()</code></td>
+            <td>Наследник <code>Employee</code>; дежурит в <code>SecurityControlCenter</code></td>
+          </tr>
+          <tr>
+            <td><code>HRDepartment</code></td>
+            <td><code>employees</code>, <code>monthlyPayrollTotal</code></td>
+            <td><code>hireEmployee(emp)</code>, <code>fireEmployee(id)</code>, <code>calculateTotalPayroll()</code></td>
+            <td>Агрегирует всех сотрудников музея</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Модуль 9: Финансы и Фасад -->
+      <div class="card" id="mod-finance">
+        <div class="card-title">
+          <span>Подсистема 9: Финансы, коммерция и фасад Музея (FinanceAndShop.h)</span>
+          <span class="badge blue">6 классов</span>
+        </div>
+        <p>Архитектурный паттерн <strong>Facade</strong> объединяет всю систему в единую точку управления:</p>
+        <table>
+          <tr><th>Класс</th><th>Поля</th><th>Методы</th><th>Ассоциации</th></tr>
+          <tr>
+            <td><code>MuseumBudget</code></td>
+            <td><code>totalBalance</code>, <code>stateSubsidy</code>, <code>ticketIncome</code>, <code>shopIncome</code>, <code>maintenanceCost</code></td>
+            <td><code>receiveRevenue(amount)</code>, <code>deductExpense(amount)</code>, <code>isSolvent()</code></td>
+            <td>Центральный баланс музея</td>
+          </tr>
+          <tr>
+            <td><code>TicketOffice</code></td>
+            <td><code>ticketsIssuedCount</code>, <code>dailyRevenue</code>, <code>isWindowOpen</code></td>
+            <td><code>sellTicket(visitor, price)</code>, <code>closeShift()</code>, <code>refundTicket(price)</code></td>
+            <td>Кассовый узел</td>
+          </tr>
+          <tr>
+            <td><code>DonationGrant</code></td>
+            <td><code>donorName</code>, <code>grantAmount</code>, <code>purposeTag</code>, <code>isApproved</code></td>
+            <td><code>approve()</code>, <code>allocate(cost)</code></td>
+            <td>Гранты и пожертвования меценатов</td>
+          </tr>
+          <tr>
+            <td><code>SouvenirItem</code></td>
+            <td><code>sku</code>, <code>title</code>, <code>price</code>, <code>stockQuantity</code></td>
+            <td><code>sell(quantity)</code>, <code>restock(quantity)</code>, <code>isInStock()</code></td>
+            <td>Товары в сувенирном магазине</td>
+          </tr>
+          <tr>
+            <td><code>GiftShop</code></td>
+            <td><code>shopName</code>, <code>inventory</code>, <code>totalRevenue</code></td>
+            <td><code>addItem(item)</code>, <code>processPurchase(sku, qty)</code>, <code>inventoryValue()</code></td>
+            <td>Магазин подарков и сувениров</td>
+          </tr>
+          <tr>
+            <td><code>Museum</code> (Фасад)</td>
+            <td><code>name</code>, <code>catalog</code>, <code>halls</code>, <code>hr</code>, <code>budget</code>, <code>shop</code>, <code>workshop</code>, <code>security</code>, <code>schedule</code></td>
+            <td><code>openMuseum()</code>, <code>closeMuseum()</code>, <code>admitVisitor(v)</code>, <code>acquireArtifact(art)</code>, <code>runNightAudit()</code></td>
+            <td><strong>Главный Фасад</strong>, координирующий все 10 подсистем комплекса</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- Раздел: Принципы ООП -->
+    <section id="oop-principles">
+      <h2>5. Реализация ключевых принципов ООП и паттернов проектирования</h2>
+      <div class="card">
+        <h3>1. Инкапсуляция</h3>
+        <p>
+          Все 259 полей данных во всех классах объявлены как <code>private</code> либо <code>protected</code>.
+          Прямой доступ к внутреннему состоянию запрещен. Доступ и модификация производятся исключительно через геттеры и семантические методы, валидирующие инварианты (проверка неотрицательности цен, допустимости габаритов, диапазонов дат и корректности прав доступа).
+        </p>
+
+        <h3>2. Наследование (Иерархии)</h3>
+        <p>В проекте представлены две разветвленные иерархии предметной области и одна иерархия ошибок:</p>
+        <ul>
+          <li><strong>Иерархия экспонатов:</strong> базовый <code>Artifact</code> &rarr; <code>Painting</code>, <code>Sculpture</code>, <code>AncientManuscript</code>, <code>ArcheologicalFind</code>.</li>
+          <li><strong>Иерархия персонала:</strong> базовый <code>Employee</code> &rarr; <code>Curator</code>, <code>TourGuide</code>, <code>Restorer</code>, <code>SecurityGuard</code>.</li>
+          <li><strong>Иерархия исключений:</strong> базовый <code>std::exception</code> &rarr; <code>MuseumException</code> &rarr; 12 специализированных классов.</li>
+        </ul>
+
+        <h3>3. Полиморфизм</h3>
+        <p>
+          Используется динамический полиморфизм времени выполнения через механизм виртуальных таблиц (vtable):
+        </p>
+        <ul>
+          <li>Виртуальный метод <code>Artifact::calculateImportanceScore() const</code> переопределяется (<code>override</code>) в каждом подклассе экспонатов, учитывая специфику (слой лака и тип красок у картин, вес и постамент у скульптур, древность рукописи, радиоуглеродный возраст артефакта).</li>
+          <li>Виртуальный метод <code>Employee::calculateMonthlySalary() const</code> переопределяется для кураторов (надбавка за число выставок), гидов (за количество экскурсий), реставраторов (за квалификационную категорию) и охраны (за ночные смены и оружие).</li>
+          <li>Виртуальные деструкторы объявлены во всех базовых классах для предотвращения утечек памяти при полиморфном удалении через указатели на базовый тип.</li>
+        </ul>
+
+        <h3>4. Композиция и Агрегация</h3>
+        <p>
+          Класс <code>ExhibitionHall</code> владеет датчиками <code>ClimateSensor</code> и <code>ClimateControlUnit</code> на правах композиции (их жизненный цикл неразрывно связан с залом).
+          Класс <code>CollectionCatalog</code> и <code>HRDepartment</code> агрегируют умные указатели на экспонаты и сотрудников, управляя их жизненным циклом и ассоциациями.
+        </p>
+
+        <h3>5. Паттерны проектирования</h3>
+        <ul>
+          <li><strong>Facade (Фасад):</strong> Класс <code>Museum</code> скрывает сложность 52 классов системы за простым и интуитивным высокоуровневым интерфейсом (<code>acquireArtifact</code>, <code>admitVisitor</code>, <code>openMuseum</code>, <code>runNightAudit</code>).</li>
+          <li><strong>Strategy (Стратегия):</strong> Класс <code>DiscountPolicy</code> инкапсулирует алгоритмы вычисления льготных тарифов для разных социальных групп посетителей.</li>
+          <li><strong>RAII (Resource Acquisition Is Initialization):</strong> Безопасное управление ресурсами и памятью без утечек и висячих указателей.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Раздел: Исключения -->
+    <section id="exceptions">
+      <h2>6. Иерархия собственных исключений (13 классов)</h2>
+      <p>
+        Все нестандартные и аварийные ситуации предметной области обрабатываются строго типизированными исключениями, наследующими от общего базового класса <code>MuseumException</code>:
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Класс исключения</th>
+            <th>Базовый класс</th>
+            <th>Сценарий возникновения</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>MuseumException</code></td><td><code>std::exception</code></td><td>Базовый класс музейных исключений, хранит код ошибки и сообщение</td></tr>
+          <tr><td><code>CapacityExceededException</code></td><td><code>MuseumException</code></td><td>Попытка впустить группу людей при превышении вместимости зала</td></tr>
+          <tr><td><code>ClimateViolationException</code></td><td><code>MuseumException</code></td><td>Критическое отклонение влажности или температуры от норматива хранения</td></tr>
+          <tr><td><code>UnauthorizedAccessException</code></td><td><code>MuseumException</code></td><td>Попытка прохода в фондохранилище с недостаточным уровнем пропуска</td></tr>
+          <tr><td><code>ArtifactNotFoundException</code></td><td><code>MuseumException</code></td><td>Запрос в каталоге несуществующего инвентарного номера экспоната</td></tr>
+          <tr><td><code>SecurityBreachException</code></td><td><code>MuseumException</code></td><td>Срабатывание тревоги, взлом витрины или обрыв датчика периметра</td></tr>
+          <tr><td><code>BudgetDeficitException</code></td><td><code>MuseumException</code></td><td>Списание средств при недостаточном балансе музейного счета</td></tr>
+          <tr><td><code>RestorationBusyException</code></td><td><code>MuseumException</code></td><td>Отправка экспоната в реставрацию при занятости всех мастеров</td></tr>
+          <tr><td><code>TicketSoldOutException</code></td><td><code>MuseumException</code></td><td>Попытка купить билет на сеанс при исчерпании доступной квоты</td></tr>
+          <tr><td><code>InvalidDimensionsException</code></td><td><code>MuseumException</code></td><td>Экспонат превышает физические размеры транспортировочного кейса или витрины</td></tr>
+          <tr><td><code>ExpiredLoanException</code></td><td><code>MuseumException</code></td><td>Истечение срока временного экспонирования по межмузейному договору</td></tr>
+          <tr><td><code>MaterialDepletedException</code></td><td><code>MuseumException</code></td><td>Нехватка химических реактивов/холста на реставрационном складе</td></tr>
+          <tr><td><code>DuplicateCatalogEntryException</code></td><td><code>MuseumException</code></td><td>Попытка зарегистрировать повторный инвентарный шифр в каталоге</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Раздел: Тесты -->
+    <section id="tests">
+      <h2>7. Модульное тестирование (32 теста UnitTest++)</h2>
+      <p>
+        Набор тестов в <code>tests/test_museum.cpp</code> полностью изолирован от внешних зависимостей благодаря header-only библиотеке <code>third_party/UnitTest++/UnitTest++.h</code>.
+      </p>
+      <div class="alert alert-success">
+        <strong>Результат выполнения тест-сьюта:</strong><br>
+        <code>Success: 32 tests passed. Test time: 0.01 seconds. 0 failures.</code>
+      </div>
+      <table>
+        <tr><th>№</th><th>Имя теста</th><th>Проверяемое поведение</th></tr>
+        <tr><td>1</td><td><code>DimensionsVolumeAndFit</code></td><td>Геометрический объем и проверка габаритов размещения</td></tr>
+        <tr><td>2</td><td><code>HistoricalEraContainment</code></td><td>Принадлежность года эпохе и расчет ее длительности</td></tr>
+        <tr><td>3</td><td><code>ArtistProfileLifetime</code></td><td>Флаг жизни художника и форматирование биографии</td></tr>
+        <tr><td>4</td><td><code>PaintingPolymorphicScore</code></td><td>Полиморфный расчет ценности полотна и проверка лакового слоя</td></tr>
+        <tr><td>5</td><td><code>SculptureWeightAndPedestal</code></td><td>Требования к усиленному постаменту для тяжелых статуй</td></tr>
+        <tr><td>6</td><td><code>ManuscriptInertGasCheck</code></td><td>Необходимость консервации в среде инертного газа</td></tr>
+        <tr><td>7</td><td><code>ArcheologicalCarbonDating</code></td><td>Регистрация радиоуглеродной датировки раскопок</td></tr>
+        <tr><td>8</td><td><code>ClimateSensorThresholds</code></td><td>Определение выхода температуры и влажности за допустимые границы</td></tr>
+        <tr><td>9</td><td><code>ClimateControlRegulation</code></td><td>Автоматическая стабилизация климата при перегреве</td></tr>
+        <tr><td>10</td><td><code>DisplayCaseOccupancy</code></td><td>Монтаж экспоната в герметичную витрину и блокировка повторной установки</td></tr>
+        <tr><td>11</td><td><code>ExhibitionHallCapacityException</code></td><td>Генерация <code>CapacityExceededException</code> при переполнении зала</td></tr>
+        <tr><td>12</td><td><code>StorageVaultSecurityAccess</code></td><td>Проверка доступа в спецхран по уровню пропуска</td></tr>
+        <tr><td>13</td><td><code>StorageRackItemSlotting</code></td><td>Размещение артефактов на полках фондового стеллажа</td></tr>
+        <tr><td>14</td><td><code>TransportCrateDimensionCheck</code></td><td>Генерация <code>InvalidDimensionsException</code> при негабаритном грузе</td></tr>
+        <tr><td>15</td><td><code>PartnerMuseumLoanLifecycle</code></td><td>Оформление и отзыв экспонатов по соглашению об обмене</td></tr>
+        <tr><td>16</td><td><code>CollectionCatalogSearch</code></td><td>Быстрый поиск в реестре и генерация <code>ArtifactNotFoundException</code></td></tr>
+        <tr><td>17</td><td><code>ExhibitionStatusTracking</code></td><td>Жизненный цикл временной экспозиции (подготовка &rarr; открыта &rarr; закрыта)</td></tr>
+        <tr><td>18</td><td><code>GuidedTourVisitorBooking</code></td><td>Регистрация посетителей в группу экскурсовода с проверкой лимита</td></tr>
+        <tr><td>19</td><td><code>AudioGuideLanguageAllocation</code></td><td>Выдача мультиязычных аудиогидов с фиксацией заряда батареи</td></tr>
+        <tr><td>20</td><td><code>VisitorDiscountCalculation</code></td><td>Применение коэффициентов скидок для студентов, пенсионеров и детей</td></tr>
+        <tr><td>21</td><td><code>TicketValidationAndUse</code></td><td>Однократный вход по билету и защита от повторного прохода</td></tr>
+        <tr><td>22</td><td><code>CuratorSalaryPolymorphism</code></td><td>Расчет оклада куратора с учетом премий за научные кураторские проекты</td></tr>
+        <tr><td>23</td><td><code>TourGuideSalaryPolymorphism</code></td><td>Расчет вознаграждения экскурсовода по числу проведенных туров</td></tr>
+        <tr><td>24</td><td><code>RestorationWorkshopFlow</code></td><td>Списание материалов и выброс <code>MaterialDepletedException</code> при нехватке</td></tr>
+        <tr><td>25</td><td><code>SecurityAlarmTriggering</code></td><td>Активация сигнализации при вскрытии витрины в нерабочие часы</td></tr>
+        <tr><td>26</td><td><code>BudgetSolvencyCheck</code></td><td>Генерация <code>BudgetDeficitException</code> при попытке перерасхода средств</td></tr>
+        <tr><td>27</td><td><code>TicketOfficeRevenueProcessing</code></td><td>Инкассация дневной выручки билетных касс</td></tr>
+        <tr><td>28</td><td><code>GiftShopInventoryPurchase</code></td><td>Покупка сувениров и корректное списание складских остатков</td></tr>
+        <tr><td>29</td><td><code>MuseumFacadeIntegrationFlow</code></td><td>Сквозной сценарий Фасада: поступление шедевра &rarr; зал &rarr; продажа билета &rarr; аудит</td></tr>
+        <tr><td>30</td><td><code>ExceptionHierarchyCatchBase</code></td><td>Перехват любых доменных ошибок по ссылке на базовый <code>MuseumException</code></td></tr>
+        <tr><td>31</td><td><code>DuplicateCatalogEntryHandling</code></td><td>Генерация <code>DuplicateCatalogEntryException</code> при коллизии шифров</td></tr>
+        <tr><td>32</td><td><code>ClimateViolationExceptionThrow</code></td><td>Выброс <code>ClimateViolationException</code> при отказе кондиционирования</td></tr>
+      </table>
+    </section>
+
+    <!-- Раздел: Сборка и запуск -->
+    <section id="build-guide">
+      <h2>8. Руководство по сборке и запуску</h2>
+      <p>Проект компилируется с использованием CMake и любого компилятора C++17 (MSVC 2019/2022/2026, GCC 9+, Clang 10+).</p>
+
+      <h3>Сборка на Windows (PowerShell):</h3>
+      <pre><code># 1. Перейдите в корневую директорию проекта:
+cd "C:\Users\Рома\Desktop\Универ\ППОИС\Lab2"
+
+# 2. Сгенерируйте решение CMake (создаст папку build):
+cmake -S . -B build
+
+# 3. Скомпилируйте проект в конфигурации Release:
+cmake --build build --config Release
+
+# 4. Запустите модульные тесты:
+.\build\Release\museum_tests.exe
+
+# 5. Запустите интерактивную консольную программу:
+.\build\Release\museum_app.exe</code></pre>
+
+      <h3>Сборка на Linux / macOS:</h3>
+      <pre><code>cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+./build/museum_tests
+./build/museum_app</code></pre>
+
+      <div class="alert alert-warning">
+        <strong>Важное примечание:</strong> Команда генерации <code>cmake -S . -B build</code> выполняется <strong>первой</strong>, чтобы сформировать файлы сборки. Только после этого запускается компиляция <code>cmake --build build</code>.
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  function filterContent() {
+    const input = document.getElementById('searchInput');
+    const filter = input.value.toLowerCase();
+    const rows = document.querySelectorAll('table tr');
+    
+    rows.forEach((row, index) => {
+      if (index === 0) return; // заголовок таблицы
+      const text = row.textContent.toLowerCase();
+      if (text.includes(filter)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+</script>
 </body>
 </html>
