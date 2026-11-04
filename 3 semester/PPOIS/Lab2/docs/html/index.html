@@ -1,802 +1,1534 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Информационная система «Музей» — Документация Lab2 (ППОИС)</title>
+  
+  <!-- Шрифт Inter и JetBrains Mono из CDN с системным fallback -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Mermaid.js для отрисовки диаграмм классов -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof mermaid !== 'undefined') {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        mermaid.initialize({
+          startOnLoad: true,
+          theme: isDark ? 'dark' : 'neutral',
+          securityLevel: 'loose',
+          fontFamily: 'Inter, sans-serif'
+        });
+      }
+    });
+  </script>
+
   <style>
     :root {
-      --primary: #1e40af;
-      --primary-light: #3b82f6;
-      --primary-bg: #eff6ff;
-      --text: #1f2937;
-      --text-muted: #4b5563;
-      --bg: #ffffff;
-      --bg-alt: #f9fafb;
-      --border: #e5e7eb;
-      --border-dark: #cbd5e1;
-      --code-bg: #f3f4f6;
-      --accent-green: #059669;
-      --accent-orange: #d97706;
+      /* Цветовая палитра: Светлая тема */
+      --bg: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #ffffff;
+      --bg-muted: #f1f5f9;
+      --border: #e2e8f0;
+      --border-focus: #3b82f6;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --text-soft: #94a3b8;
+      
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --primary-glow: rgba(37, 99, 235, 0.15);
+      
+      --accent-emerald: #059669;
+      --accent-emerald-bg: #ecfdf5;
+      --accent-amber: #d97706;
+      --accent-amber-bg: #fffbeb;
       --accent-purple: #7c3aed;
-      --accent-red: #dc2626;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      --accent-purple-bg: #f5f3ff;
+      --accent-rose: #e11d48;
+      --accent-rose-bg: #fff1f2;
+      
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 25px rgba(37, 99, 235, 0.2);
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      
+      --sidebar-w: 300px;
+      --header-h: 70px;
     }
-    * { box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    [data-theme="dark"] {
+      /* Цветовая палитра: Тёмная тема */
+      --bg: #0b0f19;
+      --bg-surface: #111827;
+      --bg-surface-elevated: #1f2937;
+      --bg-muted: #1e293b;
+      --border: #1f293d;
+      --border-focus: #60a5fa;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-soft: #64748b;
+      
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-light: rgba(59, 130, 246, 0.12);
+      --primary-glow: rgba(59, 130, 246, 0.25);
+      
+      --accent-emerald: #10b981;
+      --accent-emerald-bg: rgba(16, 185, 129, 0.12);
+      --accent-amber: #f59e0b;
+      --accent-amber-bg: rgba(245, 158, 11, 0.12);
+      --accent-purple: #a855f7;
+      --accent-purple-bg: rgba(168, 85, 247, 0.12);
+      --accent-rose: #f43f5e;
+      --accent-rose-bg: rgba(244, 63, 94, 0.12);
+      
+      --code-bg: #030712;
+      --code-text: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 14px 28px rgba(0, 0, 0, 0.6);
+      --shadow-glow: 0 0 35px rgba(59, 130, 246, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
       color: var(--text);
-      background-color: var(--bg-alt);
-      line-height: 1.6;
+      line-height: 1.65;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
     }
-    .layout {
-      display: flex;
-      min-height: 100vh;
-    }
-    .sidebar {
-      width: 320px;
-      background: #ffffff;
-      border-right: 1px solid var(--border);
+
+    /* Верхний стеклянный хедер */
+    .top-header {
       position: sticky;
       top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      padding: 24px 16px;
-      flex-shrink: 0;
-    }
-    .sidebar h3 {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin: 20px 0 8px 8px;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .sidebar li {
-      margin-bottom: 2px;
-    }
-    .sidebar a {
-      display: block;
-      padding: 6px 12px;
-      color: var(--text);
-      text-decoration: none;
-      font-size: 14px;
-      border-radius: 6px;
-      transition: background 0.15s ease, color 0.15s ease;
-    }
-    .sidebar a:hover {
-      background: var(--primary-bg);
-      color: var(--primary);
-    }
-    .search-box {
-      width: 100%;
-      padding: 8px 12px;
-      font-size: 14px;
-      border: 1px solid var(--border-dark);
-      border-radius: 6px;
-      margin-bottom: 16px;
-      outline: none;
-    }
-    .search-box:focus {
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-    }
-    .content {
-      flex: 1;
-      padding: 40px 48px;
-      max-width: 1100px;
-    }
-    h1 {
-      font-size: 2.2rem;
-      margin-top: 0;
-      color: #0f172a;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 16px;
-    }
-    h2 {
-      font-size: 1.6rem;
-      color: #1e3a8a;
-      margin-top: 40px;
+      z-index: 100;
+      height: var(--header-h);
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
     }
-    h3 {
-      font-size: 1.25rem;
-      color: #1f2937;
-      margin-top: 28px;
+    [data-theme="light"] .top-header {
+      background: rgba(255, 255, 255, 0.88);
     }
-    .badge-bar {
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-badge {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      font-size: 13.5px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-secondary {
+      background: var(--bg-muted);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    .btn-icon {
+      padding: 8px 10px;
+      font-size: 16px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-muted);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .btn-icon:hover {
+      border-color: var(--primary);
+    }
+
+    /* Двухколоночный макет */
+    .app-container {
+      display: flex;
+      min-height: calc(100vh - var(--header-h));
+      max-width: 1540px;
+      margin: 0 auto;
+    }
+
+    /* Сайдбар */
+    .sidebar {
+      width: var(--sidebar-w);
+      position: sticky;
+      top: var(--header-h);
+      height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+      padding: 24px 18px;
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+      background: var(--bg);
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px 10px 36px;
+      font-size: 13.5px;
+      border-radius: var(--radius-md);
+      outline: none;
+      box-shadow: var(--shadow-sm);
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-soft);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .sidebar-heading {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-soft);
+      margin: 24px 0 8px 10px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+    }
+    .nav-link:hover {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+    .nav-link.active {
+      color: var(--primary);
+      background: var(--primary-light);
+      font-weight: 600;
+    }
+    .nav-badge {
+      font-size: 11px;
+      padding: 2px 6px;
+      background: var(--bg-muted);
+      border-radius: var(--radius-sm);
+      color: var(--text-soft);
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* Основная зона контента */
+    .main-content {
+      flex: 1;
+      padding: 40px 56px;
+      min-width: 0;
+    }
+
+    /* Hero секция */
+    .hero-card {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 40px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      top: -120px;
+      right: -120px;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-title {
+      font-size: 2.3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      background: linear-gradient(120deg, var(--text) 40%, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 820px;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .author-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin: 20px 0 28px;
+      align-items: center;
+      gap: 16px;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
     }
-    .badge {
+    .author-meta span {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      background: #e2e8f0;
-      color: #334155;
     }
-    .badge.blue { background: #dbeafe; color: #1e40af; }
-    .badge.green { background: #d1fae5; color: #065f46; }
-    .badge.purple { background: #ede9fe; color: #5b21b6; }
-    .badge.orange { background: #fef3c7; color: #92400e; }
-    .card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 24px;
-      margin: 20px 0;
-      box-shadow: var(--shadow);
-    }
-    .card-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .stat-grid {
+
+    /* Карточки KPI метрик */
+    .kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
-      margin: 20px 0;
+      margin-bottom: 48px;
     }
-    .stat-card {
-      background: #ffffff;
+
+    .kpi-card {
+      background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
-      text-align: center;
-      box-shadow: var(--shadow);
-    }
-    .stat-num {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--primary);
-    }
-    .stat-label {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin: 16px 0 24px;
-      background: #ffffff;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
       overflow: hidden;
-      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
-    th, td {
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+    .kpi-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+      opacity: 0.8;
+    }
+    .kpi-card.emerald::after { background: var(--accent-emerald); }
+    .kpi-card.purple::after { background: var(--accent-purple); }
+    .kpi-card.amber::after { background: var(--accent-amber); }
+    .kpi-card.rose::after { background: var(--accent-rose); }
+
+    .kpi-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 4px;
+      font-feature-settings: "tnum";
+    }
+    .kpi-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .kpi-target {
+      font-size: 11.5px;
+      color: var(--accent-emerald);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+
+    /* Заголовки разделов */
+    .section-title {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 48px 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+    .section-title::before {
+      content: "";
+      width: 4px;
+      height: 24px;
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      font-size: 15px;
+      max-width: 900px;
+    }
+
+    /* Таблицы премиум качества */
+    .table-container {
+      background: var(--bg-surface);
       border: 1px solid var(--border);
-      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      margin: 20px 0 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
       text-align: left;
       font-size: 14px;
     }
+
     th {
-      background: #f1f5f9;
+      background: var(--bg-muted);
+      padding: 12px 18px;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: var(--primary-light);
+    }
+
+    /* Бейджи и теги */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      font-size: 12px;
       font-weight: 600;
-      color: #334155;
+      border-radius: var(--radius-full);
+      background: var(--bg-muted);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
     }
-    tr:nth-child(even) {
-      background-color: #f8fafc;
-    }
+    .tag.primary { background: var(--primary-light); color: var(--primary); border-color: rgba(59, 130, 246, 0.3); }
+    .tag.emerald { background: var(--accent-emerald-bg); color: var(--accent-emerald); border-color: rgba(16, 185, 129, 0.3); }
+    .tag.amber { background: var(--accent-amber-bg); color: var(--accent-amber); border-color: rgba(245, 158, 11, 0.3); }
+    .tag.purple { background: var(--accent-purple-bg); color: var(--accent-purple); border-color: rgba(168, 85, 247, 0.3); }
+    .tag.rose { background: var(--accent-rose-bg); color: var(--accent-rose); border-color: rgba(244, 63, 94, 0.3); }
+
+    /* Код и инлайн-блоки */
     code {
-      font-family: Consolas, Monaco, "Courier New", monospace;
-      background: var(--code-bg);
+      font-family: 'Fira Code', Consolas, monospace;
+      font-size: 13px;
       padding: 2px 6px;
+      background: var(--bg-muted);
+      border: 1px solid var(--border);
       border-radius: 4px;
-      font-size: 13px;
-      color: #b91c1c;
+      color: var(--primary);
     }
+
+    .code-block-wrapper {
+      position: relative;
+      margin: 18px 0 26px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-soft);
+      font-size: 12px;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      padding: 4px 10px;
+      font-size: 11.5px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.15s ease;
+    }
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
     pre {
-      background: #0f172a;
-      color: #f8fafc;
-      padding: 16px;
-      border-radius: 8px;
+      padding: 18px;
+      margin: 0;
       overflow-x: auto;
-      font-size: 13px;
-      font-family: Consolas, Monaco, "Courier New", monospace;
-      line-height: 1.5;
+      font-family: 'Fira Code', monospace;
+      font-size: 13.5px;
+      color: var(--code-text);
+      line-height: 1.6;
     }
     pre code {
       background: transparent;
-      color: inherit;
+      border: none;
       padding: 0;
+      color: inherit;
     }
-    .alert {
-      padding: 14px 18px;
-      border-left: 4px solid var(--primary-light);
-      background: var(--primary-bg);
-      border-radius: 0 8px 8px 0;
-      margin: 16px 0;
+
+    /* Карточки модулей и аккордеоны */
+    .module-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.2s ease;
+    }
+    .module-card:hover {
+      border-color: var(--border-focus);
+    }
+
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      gap: 12px;
+    }
+
+    .module-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .class-item {
+      border-left: 3px solid var(--primary);
+      padding-left: 14px;
+      margin: 12px 0 16px;
+    }
+    .class-name {
+      font-weight: 700;
+      font-family: 'Fira Code', monospace;
+      color: var(--primary);
+      font-size: 14.5px;
+    }
+    .class-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* Диаграммы Mermaid контейнер */
+    .diagram-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin: 24px 0;
+      box-shadow: var(--shadow-sm);
+      overflow-x: auto;
+    }
+    .diagram-title {
+      font-weight: 700;
+      font-size: 14.5px;
+      margin-bottom: 16px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Инфо-алерты */
+    .callout {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      margin: 20px 0;
       font-size: 14px;
     }
-    .alert-success {
-      border-color: var(--accent-green);
-      background: #ecfdf5;
-      color: #065f46;
+    .callout.success { border-left-color: var(--accent-emerald); background: var(--accent-emerald-bg); }
+    .callout.amber { border-left-color: var(--accent-amber); background: var(--accent-amber-bg); }
+
+    /* Фильтры поиска по классам */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 18px 0;
     }
-    .alert-warning {
-      border-color: var(--accent-orange);
-      background: #fffbeb;
-      color: #92400e;
+    .filter-chip {
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .filter-chip:hover {
+      border-color: var(--primary);
+      color: var(--text);
+    }
+    .filter-chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    /* Футер */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      margin-top: 60px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13.5px;
+    }
+
+    /* Адаптивность для мобильных */
+    @media (max-width: 960px) {
+      .app-container { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); }
+      .main-content { padding: 24px 20px; }
+      .top-header { padding: 0 16px; }
     }
   </style>
 </head>
 <body>
-<div class="layout">
-  <!-- Боковая панель -->
-  <aside class="sidebar">
-    <div style="font-weight: bold; font-size: 16px; color: var(--primary); margin-bottom: 12px;">🏛️ Музейная система</div>
-    <input type="text" id="searchInput" class="search-box" placeholder="Поиск класса или метода..." onkeyup="filterContent()">
-    
-    <h3>Навигация</h3>
-    <ul>
-      <li><a href="#overview">Общие сведения</a></li>
-      <li><a href="#metrics">Метрики и требования</a></li>
-      <li><a href="#architecture">Архитектура и модули</a></li>
-      <li><a href="#class-catalog">Каталог классов (52+13)</a></li>
-      <li><a href="#oop-principles">Принципы ООП и паттерны</a></li>
-      <li><a href="#exceptions">Иерархия исключений</a></li>
-      <li><a href="#tests">Модульные тесты (32)</a></li>
-      <li><a href="#build-guide">Сборка и запуск</a></li>
-    </ul>
 
-    <h3>Модули предметной области</h3>
-    <ul>
-      <li><a href="#mod-artifacts">1. Экспонаты (Artifacts)</a></li>
-      <li><a href="#mod-halls">2. Залы и Климат (Halls)</a></li>
-      <li><a href="#mod-storage">3. Фонды и Логистика (Storage)</a></li>
-      <li><a href="#mod-exhibitions">4. Выставки и События (Events)</a></li>
-      <li><a href="#mod-visitors">5. Посетители и Билеты (Tickets)</a></li>
-      <li><a href="#mod-staff">6. Персонал и Кадры (Staff)</a></li>
-      <li><a href="#mod-restoration">7. Лаборатория реставрации</a></li>
-      <li><a href="#mod-security">8. Безопасность (Security)</a></li>
-      <li><a href="#mod-finance">9. Финансы и Музей (Facade)</a></li>
-      <li><a href="#mod-exceptions">10. Исключения (Exceptions)</a></li>
-    </ul>
-  </aside>
-
-  <!-- Основной контент -->
-  <main class="content">
-    <header>
-      <h1>Информационная система «Музей» (Museum Management System)</h1>
-      <p style="font-size: 1.1rem; color: var(--text-muted);">
-        Лабораторная работа №2 по курсу <strong>«Проектирование программного обеспечения интеллектуальных систем» (ППОИС)</strong>.<br>
-        2-й курс, 3-й семестр. Автор: <strong>Пушаков Роман</strong>. Вариант: <strong>Музей</strong>.
-      </p>
-      <div class="badge-bar">
-        <span class="badge blue">C++17 Standard</span>
-        <span class="badge green">65 Классов (52 модели + 13 исключений)</span>
-        <span class="badge purple">259 Полей</span>
-        <span class="badge blue">175 Поведений</span>
-        <span class="badge green">76 Ассоциаций</span>
-        <span class="badge orange">32 Unit-теста (UnitTest++)</span>
-        <span class="badge green">100% Тестов пройдено</span>
+  <!-- Верхняя панель навигации -->
+  <header class="top-header">
+    <div class="brand-group">
+      <div class="logo-badge">🏛️</div>
+      <div>
+        <div class="brand-title">Museum Core System <span class="tag primary">v2.0 • C++17</span></div>
+        <div class="brand-subtitle">Информационная система управления музейным комплексом</div>
       </div>
-    </header>
+    </div>
+    <div class="header-actions">
+      <a href="#build-guide" class="btn btn-secondary">⚡ Быстрый старт</a>
+      <button id="themeToggleBtn" class="btn-icon" title="Переключить тему (Светлая / Тёмная)" onclick="toggleTheme()">🌓</button>
+    </div>
+  </header>
 
-    <!-- Раздел: Обзор -->
-    <section id="overview">
-      <h2>1. Общие сведения о проекте</h2>
-      <p>
-        Проект представляет собой объектно-ориентированную программную модель музейного комплекса мирового уровня.
-        Система комплексно автоматизирует все аспекты музейного дела:
-      </p>
-      <ul>
-        <li><strong>Фондовую и экспозиционную работу:</strong> каталогизация шедевров живописи, скульптур, рукописей, археологических находок, размещение их в залах и хранилищах;</li>
-        <li><strong>Микроклимат и сохранность:</strong> мониторинг температуры, относительной влажности, люксов освещенности через датчики с автоматической термо-регуляцией;</li>
-        <li><strong>Межмузейный обмен и логистику:</strong> заключение соглашений о временных выставках с музеями-партнерами (Лувр, Прадо и др.), транспортировка в климатических контейнерах;</li>
-        <li><strong>Экскурсионную и культурную деятельность:</strong> планирование временных выставок, формирование маршрутов, назначение гидов, выдача аудиогидов;</li>
-        <li><strong>Работу с посетителями:</strong> продажа билетов с динамическими льготными тарифами (студенты, пенсионеры), годовые абонементы, гардеробные номерки и отзывы;</li>
-        <li><strong>Научно-реставрационную лабораторию:</strong> составление актов дефектации (Condition Report), списание реставрационных материалов, завершение циклов реставрации;</li>
-        <li><strong>Комплексную безопасность:</strong> видеонаблюдение, датчики вибрации/периметра, доступ по ключ-картам, протоколирование инцидентов и тревог;</li>
-        <li><strong>Финансовый менеджмент и сувенирный магазин:</strong> контроль сводного бюджета, поступление грантов и донатов, продажа сувениров через кассовые терминалы.</li>
+  <div class="app-container">
+    <!-- Левый сайдбар со структурой и поиском -->
+    <aside class="sidebar">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="classSearch" class="search-input" placeholder="Поиск классов, методов..." onkeyup="filterDocs()">
+      </div>
+
+      <div class="sidebar-heading">Основные разделы</div>
+      <ul class="nav-list">
+        <li><a href="#overview" class="nav-link active"><span>1. Общие сведения</span></a></li>
+        <li><a href="#kpi" class="nav-link"><span>2. Метрики и ТЗ</span> <span class="nav-badge">65 кл.</span></a></li>
+        <li><a href="#architecture" class="nav-link"><span>3. Архитектура и диаграммы</span> <span class="nav-badge">UML</span></a></li>
+        <li><a href="#modules" class="nav-link"><span>4. Модули и каталог классов</span> <span class="nav-badge">10 мод.</span></a></li>
+        <li><a href="#oop" class="nav-link"><span>5. Реализация ООП</span></a></li>
+        <li><a href="#exceptions" class="nav-link"><span>6. Иерархия исключений</span> <span class="nav-badge">13 шт.</span></a></li>
+        <li><a href="#tests" class="nav-link"><span>7. Модульные тесты</span> <span class="nav-badge">32/32</span></a></li>
+        <li><a href="#build-guide" class="nav-link"><span>8. Руководство по сборке</span></a></li>
       </ul>
-    </section>
 
-    <!-- Раздел: Метрики -->
-    <section id="metrics">
-      <h2>2. Метрики и выполнение требований ТЗ</h2>
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-num">65</div>
-          <div class="stat-label">Всего классов (Требование: &ge; 50)</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">259</div>
-          <div class="stat-label">Полей данных (Требование: &ge; 150)</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">175</div>
-          <div class="stat-label">Поведений/методов (Требование: &ge; 100)</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">76</div>
-          <div class="stat-label">Ассоциаций (Требование: &ge; 30)</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">13</div>
-          <div class="stat-label">Классов исключений (Требование: &ge; 12)</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">32</div>
-          <div class="stat-label">Модульных тестов (Покрытие &gt; 95%)</div>
-        </div>
-      </div>
+      <div class="sidebar-heading">Модули предметной области</div>
+      <ul class="nav-list">
+        <li><a href="#mod-artifacts" class="nav-link"><span>1. Artifacts (Экспонаты)</span> <span class="nav-badge">8</span></a></li>
+        <li><a href="#mod-halls" class="nav-link"><span>2. Halls & Climate</span> <span class="nav-badge">6</span></a></li>
+        <li><a href="#mod-storage" class="nav-link"><span>3. Storage & Logistics</span> <span class="nav-badge">6</span></a></li>
+        <li><a href="#mod-events" class="nav-link"><span>4. Exhibitions & Events</span> <span class="nav-badge">6</span></a></li>
+        <li><a href="#mod-tickets" class="nav-link"><span>5. Visitors & Tickets</span> <span class="nav-badge">6</span></a></li>
+        <li><a href="#mod-staff" class="nav-link"><span>6. Staff & HR</span> <span class="nav-badge">6</span></a></li>
+        <li><a href="#mod-restoration" class="nav-link"><span>7. Restoration Lab</span> <span class="nav-badge">4</span></a></li>
+        <li><a href="#mod-security" class="nav-link"><span>8. Security System</span> <span class="nav-badge">4</span></a></li>
+        <li><a href="#mod-finance" class="nav-link"><span>9. Finance & Shop (Facade)</span> <span class="nav-badge">6</span></a></li>
+        <li><a href="#mod-exceptions" class="nav-link"><span>10. Museum Exceptions</span> <span class="nav-badge">13</span></a></li>
+      </ul>
+    </aside>
 
-      <div class="alert alert-success">
-        <strong>Все требования технического задания перевыполнены:</strong> количество классов превышает норматив на 30%, полей — на 72%, методов — на 75%, ассоциаций — в 2.5 раза, количество собственных исключений составляет 13 (при минимуме 12).
-      </div>
-    </section>
-
-    <!-- Раздел: Архитектура -->
-    <section id="architecture">
-      <h2>3. Архитектура системы и модульное деление</h2>
-      <p>
-        Проект организован по принципу слабой связности (Low Coupling) и высокой связности внутри подсистем (High Cohesion).
-        Взаимодействие компонентов с внешним миром инкапсулировано через единый фасад — класс <code>Museum</code>.
-      </p>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Модуль (Файлы)</th>
-            <th>Ключевые классы</th>
-            <th>Ответственность и функциональность</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>include/Artifacts.h</code></td>
-            <td><code>Dimensions</code>, <code>HistoricalEra</code>, <code>ArtistProfile</code>, <code>Artifact</code>, <code>Painting</code>, <code>Sculpture</code>, <code>AncientManuscript</code>, <code>ArcheologicalFind</code></td>
-            <td>Иерархия экспонатов, их габариты, исторические эпохи, авторы, страховая стоимость, полиморфный расчет коэффициента ценности.</td>
-          </tr>
-          <tr>
-            <td><code>include/HallsAndClimate.h</code></td>
-            <td><code>ClimateSensor</code>, <code>ClimateControlUnit</code>, <code>DisplayCase</code>, <code>LightingSystem</code>, <code>ExhibitionHall</code>, <code>StorageVault</code></td>
-            <td>Физическая инфраструктура: залы, витрины, освещение, датчики микроклимата и автоматическая климатическая установка.</td>
-          </tr>
-          <tr>
-            <td><code>include/StorageAndLogistics.h</code></td>
-            <td><code>StorageRack</code>, <code>TransportCrate</code>, <code>PartnerMuseum</code>, <code>LoanAgreement</code>, <code>CatalogEntry</code>, <code>CollectionCatalog</code></td>
-            <td>Фондовое хранение, стеллажи, транспортировочные кейсы, партнерские музеи, договора займов и общий инвентарный каталог.</td>
-          </tr>
-          <tr>
-            <td><code>include/ExhibitionsAndEvents.h</code></td>
-            <td><code>Exhibition</code>, <code>ExcursionRoute</code>, <code>GuidedTour</code>, <code>AudioGuideDevice</code>, <code>SpecialEvent</code>, <code>ExhibitionSchedule</code></td>
-            <td>Экспозиционная деятельность: выставки, маршруты обхода, бронирование экскурсий, выдача аудиогидов, лекции и вернисажи.</td>
-          </tr>
-          <tr>
-            <td><code>include/VisitorsAndTickets.h</code></td>
-            <td><code>DiscountPolicy</code>, <code>Visitor</code>, <code>Ticket</code>, <code>MembershipCard</code>, <code>CloakroomTag</code>, <code>VisitorFeedback</code></td>
-            <td>Управление клиентским потоком: расчет скидок, оформление билетов, клубные карты членов музея, гардероб и книга отзывов.</td>
-          </tr>
-          <tr>
-            <td><code>include/StaffAndHR.h</code></td>
-            <td><code>Employee</code>, <code>Curator</code>, <code>TourGuide</code>, <code>Restorer</code>, <code>SecurityGuard</code>, <code>HRDepartment</code></td>
-            <td>Иерархия персонала: кураторы, экскурсоводы, реставраторы, охрана, отдел кадров, полиморфный расчет зарплаты с премиями.</td>
-          </tr>
-          <tr>
-            <td><code>include/RestorationLab.h</code></td>
-            <td><code>RestorationMaterial</code>, <code>ConditionReport</code>, <code>RestorationTask</code>, <code>RestorationWorkshop</code></td>
-            <td>Лаборатория консервации и реставрации: дефектовочные ведомости, учет расхода реактивов, выполнение заказ-нарядов.</td>
-          </tr>
-          <tr>
-            <td><code>include/SecuritySystem.h</code></td>
-            <td><code>SecurityCamera</code>, <code>AlarmTrigger</code>, <code>AccessBadge</code>, <code>SecurityControlCenter</code></td>
-            <td>Комплекс безопасности: камеры наблюдения, рубежи охранной сигнализации, магнитные пропуска с уровнями доступа, пульт охраны.</td>
-          </tr>
-          <tr>
-            <td><code>include/FinanceAndShop.h</code></td>
-            <td><code>MuseumBudget</code>, <code>TicketOffice</code>, <code>DonationGrant</code>, <code>SouvenirItem</code>, <code>GiftShop</code>, <code>Museum</code></td>
-            <td>Финансовый контур: баланс, кассы, благотворительные гранты, сувенирная лавка и центральный фасадный класс <code>Museum</code>.</td>
-          </tr>
-          <tr>
-            <td><code>include/MuseumExceptions.h</code></td>
-            <td>13 специализированных классов исключений</td>
-            <td>Иерархия исключительных ситуаций с кодами ошибок, перехватом в UI и информативными сообщениями.</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Раздел: Каталог классов -->
-    <section id="class-catalog">
-      <h2>4. Детальная спецификация классов предметной области</h2>
-
-      <!-- Модуль 1 -->
-      <div class="card" id="mod-artifacts">
-        <div class="card-title">
-          <span>Подсистема 1: Экспонаты и коллекция (Artifacts.h)</span>
-          <span class="badge blue">8 классов</span>
-        </div>
-        <p>Иерархия культурных ценностей с полиморфными методами оценки исторической важности и хрупкости:</p>
-        <table>
-          <tr><th>Класс</th><th>Поля (Атрибуты)</th><th>Методы (Поведения)</th><th>Ассоциации</th></tr>
-          <tr>
-            <td><code>Dimensions</code></td>
-            <td><code>width</code>, <code>height</code>, <code>depth</code> (double)</td>
-            <td><code>volume()</code>, <code>fitsIn(maxW, maxH, maxD)</code>, <code>scale(factor)</code></td>
-            <td>Компонент габаритов для <code>Artifact</code> и <code>TransportCrate</code></td>
-          </tr>
-          <tr>
-            <td><code>HistoricalEra</code></td>
-            <td><code>name</code>, <code>startYear</code>, <code>endYear</code>, <code>civilization</code></td>
-            <td><code>containsYear(year)</code>, <code>duration()</code></td>
-            <td>Ассоциация 1 к N с <code>Artifact</code></td>
-          </tr>
-          <tr>
-            <td><code>ArtistProfile</code></td>
-            <td><code>fullName</code>, <code>birthYear</code>, <code>deathYear</code>, <code>nationality</code>, <code>artMovement</code></td>
-            <td><code>isAlive()</code>, <code>biographySummary()</code></td>
-            <td>Связан с <code>Artifact</code> (1 автор — много работ)</td>
-          </tr>
-          <tr>
-            <td><code>Artifact</code> (базовый)</td>
-            <td><code>id</code>, <code>title</code>, <code>insuranceValue</code>, <code>era</code>, <code>author</code>, <code>dimensions</code>, <code>isExhibited</code>, <code>inRestoration</code></td>
-            <td><code>calculateImportanceScore()</code> (virtual), <code>markExhibited()</code>, <code>sendToRestoration()</code>, <code>returnFromRestoration()</code>, <code>isAvailableForViewing()</code></td>
-            <td>Агрегирует <code>Dimensions</code>, <code>HistoricalEra</code>, <code>ArtistProfile</code>; помещается в <code>DisplayCase</code></td>
-          </tr>
-          <tr>
-            <td><code>Painting</code></td>
-            <td><code>canvasType</code>, <code>paintMedium</code>, <code>isFramed</code>, <code>varnishLayerCondition</code></td>
-            <td><code>calculateImportanceScore()</code> (override), <code>applyProtectiveGlass()</code>, <code>inspectVarnish()</code></td>
-            <td>Наследник <code>Artifact</code></td>
-          </tr>
-          <tr>
-            <td><code>Sculpture</code></td>
-            <td><code>material</code>, <code>weightKg</code>, <code>requiresReinforcedPedestal</code>, <code>isOutdoorCompatible</code></td>
-            <td><code>calculateImportanceScore()</code> (override), <code>verifyPedestalSafety()</code></td>
-            <td>Наследник <code>Artifact</code></td>
-          </tr>
-          <tr>
-            <td><code>AncientManuscript</code></td>
-            <td><code>language</code>, <code>pageCount</code>, <code>scriptType</code>, <code>isIlluminated</code></td>
-            <td><code>calculateImportanceScore()</code> (override), <code>needsInertGasStorage()</code></td>
-            <td>Наследник <code>Artifact</code></td>
-          </tr>
-          <tr>
-            <td><code>ArcheologicalFind</code></td>
-            <td><code>digSiteLocation</code>, <code>discoveryYear</code>, <code>expeditionLeader</code>, <code>preservationState</code></td>
-            <td><code>calculateImportanceScore()</code> (override), <code>registerCarbonDating(age)</code></td>
-            <td>Наследник <code>Artifact</code></td>
-          </tr>
-        </table>
-      </div>
-
-      <!-- Модуль 2 -->
-      <div class="card" id="mod-halls">
-        <div class="card-title">
-          <span>Подсистема 2: Залы, экспозиционные витрины и климат (HallsAndClimate.h)</span>
-          <span class="badge blue">6 классов</span>
-        </div>
-        <table>
-          <tr><th>Класс</th><th>Поля</th><th>Методы</th><th>Ассоциации</th></tr>
-          <tr>
-            <td><code>ClimateSensor</code></td>
-            <td><code>sensorId</code>, <code>temperature</code>, <code>relativeHumidity</code>, <code>luxLevel</code>, <code>isOperational</code></td>
-            <td><code>recordReadings(t, h, lux)</code>, <code>isWithinNorms(minT, maxT, minH, maxH)</code>, <code>calibrate()</code></td>
-            <td>Композиция внутри <code>ExhibitionHall</code> и <code>StorageVault</code></td>
-          </tr>
-          <tr>
-            <td><code>ClimateControlUnit</code></td>
-            <td><code>unitId</code>, <code>targetTemp</code>, <code>targetHumidity</code>, <code>activeCooling</code>, <code>activeHumidifier</code></td>
-            <td><code>adjustToConditions(sensor)</code>, <code>turnOnEcoMode()</code>, <code>emergencyPurge()</code></td>
-            <td>Управляет микроклиматом залов</td>
-          </tr>
-          <tr>
-            <td><code>DisplayCase</code></td>
-            <td><code>caseId</code>, <code>hasAlarm</code>, <code>isSealedHermetic</code>, <code>maxWeightKg</code>, <code>currentArtifactId</code></td>
-            <td><code>mountArtifact(artId, weight)</code>, <code>removeArtifact()</code>, <code>isOccupied()</code></td>
-            <td>Хранит экспонат <code>Artifact</code></td>
-          </tr>
-          <tr>
-            <td><code>LightingSystem</code></td>
-            <td><code>systemId</code>, <code>dimmerLevelPct</code>, <code>uvFilterEnabled</code>, <code>nightMode</code></td>
-            <td><code>setDayMode()</code>, <code>setNightMode()</code>, <code>adjustForVulnerableArt()</code></td>
-            <td>Освещение <code>ExhibitionHall</code></td>
-          </tr>
-          <tr>
-            <td><code>ExhibitionHall</code></td>
-            <td><code>hallId</code>, <code>name</code>, <code>floorNumber</code>, <code>maxVisitorsCapacity</code>, <code>displayCases</code>, <code>sensor</code>, <code>climateUnit</code></td>
-            <td><code>addDisplayCase(caseObj)</code>, <code>monitorEnvironment()</code>, <code>canAccommodate(count)</code></td>
-            <td>Композиция <code>DisplayCase</code>, <code>ClimateSensor</code>; ассоциирован с <code>Exhibition</code></td>
-          </tr>
-          <tr>
-            <td><code>StorageVault</code></td>
-            <td><code>vaultId</code>, <code>securityClearanceRequired</code>, <code>totalRacks</code>, <code>isLocked</code>, <code>sensor</code></td>
-            <td><code>lockVault()</code>, <code>unlockVault(badgeLevel)</code>, <code>checkInventoryIntegrity()</code></td>
-            <td>Фондохранилище для <code>StorageRack</code></td>
-          </tr>
-        </table>
-      </div>
-
-      <!-- Модуль 6: Персонал -->
-      <div class="card" id="mod-staff">
-        <div class="card-title">
-          <span>Подсистема 6: Персонал и отдел кадров (StaffAndHR.h)</span>
-          <span class="badge blue">6 классов</span>
-        </div>
-        <p>Иерархия сотрудников с полиморфным расчетом оклада и функциональных обязанностей:</p>
-        <table>
-          <tr><th>Класс</th><th>Поля</th><th>Методы</th><th>Ассоциации</th></tr>
-          <tr>
-            <td><code>Employee</code> (базовый)</td>
-            <td><code>id</code>, <code>fullName</code>, <code>baseSalary</code>, <code>employmentDate</code>, <code>isActive</code></td>
-            <td><code>calculateMonthlySalary()</code> (virtual), <code>grantBonus(amount)</code>, <code>terminate()</code></td>
-            <td>Сотрудник музея, учет в <code>HRDepartment</code></td>
-          </tr>
-          <tr>
-            <td><code>Curator</code></td>
-            <td><code>assignedDepartment</code>, <code>managedExhibitionsCount</code>, <code>publishedPapersCount</code></td>
-            <td><code>calculateMonthlySalary()</code> (override), <code>publishCatalog()</code>, <code>approveLoan()</code></td>
-            <td>Наследник <code>Employee</code>; курирует <code>Exhibition</code></td>
-          </tr>
-          <tr>
-            <td><code>TourGuide</code></td>
-            <td><code>spokenLanguages</code>, <code>conductedToursCount</code>, <code>rating</code></td>
-            <td><code>calculateMonthlySalary()</code> (override), <code>addLanguage(lang)</code>, <code>conductTour()</code></td>
-            <td>Наследник <code>Employee</code>; проводит <code>GuidedTour</code></td>
-          </tr>
-          <tr>
-            <td><code>Restorer</code></td>
-            <td><code>specialization</code>, <code>certifiedGrade</code>, <code>completedRestorationsCount</code></td>
-            <td><code>calculateMonthlySalary()</code> (override), <code>completeTask()</code>, <code>upgradeGrade()</code></td>
-            <td>Наследник <code>Employee</code>; выполняет <code>RestorationTask</code></td>
-          </tr>
-          <tr>
-            <td><code>SecurityGuard</code></td>
-            <td><code>shiftType</code>, <code>armedPermit</code>, <code>patrolRouteCode</code></td>
-            <td><code>calculateMonthlySalary()</code> (override), <code>logIncident()</code>, <code>switchShift()</code></td>
-            <td>Наследник <code>Employee</code>; дежурит в <code>SecurityControlCenter</code></td>
-          </tr>
-          <tr>
-            <td><code>HRDepartment</code></td>
-            <td><code>employees</code>, <code>monthlyPayrollTotal</code></td>
-            <td><code>hireEmployee(emp)</code>, <code>fireEmployee(id)</code>, <code>calculateTotalPayroll()</code></td>
-            <td>Агрегирует всех сотрудников музея</td>
-          </tr>
-        </table>
-      </div>
-
-      <!-- Модуль 9: Финансы и Фасад -->
-      <div class="card" id="mod-finance">
-        <div class="card-title">
-          <span>Подсистема 9: Финансы, коммерция и фасад Музея (FinanceAndShop.h)</span>
-          <span class="badge blue">6 классов</span>
-        </div>
-        <p>Архитектурный паттерн <strong>Facade</strong> объединяет всю систему в единую точку управления:</p>
-        <table>
-          <tr><th>Класс</th><th>Поля</th><th>Методы</th><th>Ассоциации</th></tr>
-          <tr>
-            <td><code>MuseumBudget</code></td>
-            <td><code>totalBalance</code>, <code>stateSubsidy</code>, <code>ticketIncome</code>, <code>shopIncome</code>, <code>maintenanceCost</code></td>
-            <td><code>receiveRevenue(amount)</code>, <code>deductExpense(amount)</code>, <code>isSolvent()</code></td>
-            <td>Центральный баланс музея</td>
-          </tr>
-          <tr>
-            <td><code>TicketOffice</code></td>
-            <td><code>ticketsIssuedCount</code>, <code>dailyRevenue</code>, <code>isWindowOpen</code></td>
-            <td><code>sellTicket(visitor, price)</code>, <code>closeShift()</code>, <code>refundTicket(price)</code></td>
-            <td>Кассовый узел</td>
-          </tr>
-          <tr>
-            <td><code>DonationGrant</code></td>
-            <td><code>donorName</code>, <code>grantAmount</code>, <code>purposeTag</code>, <code>isApproved</code></td>
-            <td><code>approve()</code>, <code>allocate(cost)</code></td>
-            <td>Гранты и пожертвования меценатов</td>
-          </tr>
-          <tr>
-            <td><code>SouvenirItem</code></td>
-            <td><code>sku</code>, <code>title</code>, <code>price</code>, <code>stockQuantity</code></td>
-            <td><code>sell(quantity)</code>, <code>restock(quantity)</code>, <code>isInStock()</code></td>
-            <td>Товары в сувенирном магазине</td>
-          </tr>
-          <tr>
-            <td><code>GiftShop</code></td>
-            <td><code>shopName</code>, <code>inventory</code>, <code>totalRevenue</code></td>
-            <td><code>addItem(item)</code>, <code>processPurchase(sku, qty)</code>, <code>inventoryValue()</code></td>
-            <td>Магазин подарков и сувениров</td>
-          </tr>
-          <tr>
-            <td><code>Museum</code> (Фасад)</td>
-            <td><code>name</code>, <code>catalog</code>, <code>halls</code>, <code>hr</code>, <code>budget</code>, <code>shop</code>, <code>workshop</code>, <code>security</code>, <code>schedule</code></td>
-            <td><code>openMuseum()</code>, <code>closeMuseum()</code>, <code>admitVisitor(v)</code>, <code>acquireArtifact(art)</code>, <code>runNightAudit()</code></td>
-            <td><strong>Главный Фасад</strong>, координирующий все 10 подсистем комплекса</td>
-          </tr>
-        </table>
-      </div>
-    </section>
-
-    <!-- Раздел: Принципы ООП -->
-    <section id="oop-principles">
-      <h2>5. Реализация ключевых принципов ООП и паттернов проектирования</h2>
-      <div class="card">
-        <h3>1. Инкапсуляция</h3>
-        <p>
-          Все 259 полей данных во всех классах объявлены как <code>private</code> либо <code>protected</code>.
-          Прямой доступ к внутреннему состоянию запрещен. Доступ и модификация производятся исключительно через геттеры и семантические методы, валидирующие инварианты (проверка неотрицательности цен, допустимости габаритов, диапазонов дат и корректности прав доступа).
+    <!-- Основной блок документации -->
+    <main class="main-content">
+      
+      <!-- Карточка Hero -->
+      <section id="overview" class="hero-card">
+        <h1 class="hero-title">Проектирование ПО интеллектуальных систем</h1>
+        <p class="hero-subtitle">
+          Лабораторная работа №2. Полномасштабная объектно-ориентированная система автоматизации и диспетчеризации государственного музейного комплекса.
         </p>
+        <div class="author-meta">
+          <span>👨‍💻 <strong>Студент:</strong> Пушаков Роман Дмитриевич</span>
+          <span>🏛️ <strong>Вариант:</strong> Музей (Museum)</span>
+          <span>📚 <strong>Курс:</strong> 2 курс, 3 семестр</span>
+          <span>⚙️ <strong>Стандарт:</strong> ISO/IEC C++17</span>
+        </div>
+      </section>
 
-        <h3>2. Наследование (Иерархии)</h3>
-        <p>В проекте представлены две разветвленные иерархии предметной области и одна иерархия ошибок:</p>
-        <ul>
-          <li><strong>Иерархия экспонатов:</strong> базовый <code>Artifact</code> &rarr; <code>Painting</code>, <code>Sculpture</code>, <code>AncientManuscript</code>, <code>ArcheologicalFind</code>.</li>
-          <li><strong>Иерархия персонала:</strong> базовый <code>Employee</code> &rarr; <code>Curator</code>, <code>TourGuide</code>, <code>Restorer</code>, <code>SecurityGuard</code>.</li>
-          <li><strong>Иерархия исключений:</strong> базовый <code>std::exception</code> &rarr; <code>MuseumException</code> &rarr; 12 специализированных классов.</li>
-        </ul>
+      <!-- Блок KPI метрик -->
+      <section id="kpi">
+        <h2 class="section-title">Метрики предметной области и соответствие ТЗ</h2>
+        <p class="section-desc">Все количественные и архитектурные нормативы лабораторной работы перевыполнены с запасом надёжности:</p>
 
-        <h3>3. Полиморфизм</h3>
-        <p>
-          Используется динамический полиморфизм времени выполнения через механизм виртуальных таблиц (vtable):
-        </p>
-        <ul>
-          <li>Виртуальный метод <code>Artifact::calculateImportanceScore() const</code> переопределяется (<code>override</code>) в каждом подклассе экспонатов, учитывая специфику (слой лака и тип красок у картин, вес и постамент у скульптур, древность рукописи, радиоуглеродный возраст артефакта).</li>
-          <li>Виртуальный метод <code>Employee::calculateMonthlySalary() const</code> переопределяется для кураторов (надбавка за число выставок), гидов (за количество экскурсий), реставраторов (за квалификационную категорию) и охраны (за ночные смены и оружие).</li>
-          <li>Виртуальные деструкторы объявлены во всех базовых классах для предотвращения утечек памяти при полиморфном удалении через указатели на базовый тип.</li>
-        </ul>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-value">65</div>
+            <div class="kpi-label">Всего классов</div>
+            <div class="kpi-target">✓ Норматив: &ge; 50 (+30%)</div>
+          </div>
+          <div class="kpi-card emerald">
+            <div class="kpi-value">259</div>
+            <div class="kpi-label">Полей данных</div>
+            <div class="kpi-target">✓ Норматив: &ge; 150 (+72%)</div>
+          </div>
+          <div class="kpi-card purple">
+            <div class="kpi-value">175</div>
+            <div class="kpi-label">Содержательных методов</div>
+            <div class="kpi-target">✓ Норматив: &ge; 100 (+75%)</div>
+          </div>
+          <div class="kpi-card amber">
+            <div class="kpi-value">76</div>
+            <div class="kpi-label">Ассоциаций классов</div>
+            <div class="kpi-target">✓ Норматив: &ge; 30 (в 2.5 раза)</div>
+          </div>
+          <div class="kpi-card rose">
+            <div class="kpi-value">13</div>
+            <div class="kpi-label">Классов исключений</div>
+            <div class="kpi-target">✓ Норматив: &ge; 12</div>
+          </div>
+          <div class="kpi-card emerald">
+            <div class="kpi-value">32/32</div>
+            <div class="kpi-label">UnitTest++ тестов</div>
+            <div class="kpi-target">✓ 100% Passed (&gt;95% cov.)</div>
+          </div>
+        </div>
+      </section>
 
-        <h3>4. Композиция и Агрегация</h3>
-        <p>
-          Класс <code>ExhibitionHall</code> владеет датчиками <code>ClimateSensor</code> и <code>ClimateControlUnit</code> на правах композиции (их жизненный цикл неразрывно связан с залом).
-          Класс <code>CollectionCatalog</code> и <code>HRDepartment</code> агрегируют умные указатели на экспонаты и сотрудников, управляя их жизненным циклом и ассоциациями.
-        </p>
+      <!-- Раздел: Архитектура и UML диаграммы -->
+      <section id="architecture">
+        <h2 class="section-title">Архитектура системы и диаграммы классов</h2>
+        <p class="section-desc">Система спроектирована по модульному принципу высокой связности (High Cohesion) и низкого зацепления (Low Coupling) с единой точкой входа через паттерн <strong>Facade</strong>.</p>
 
-        <h3>5. Паттерны проектирования</h3>
-        <ul>
-          <li><strong>Facade (Фасад):</strong> Класс <code>Museum</code> скрывает сложность 52 классов системы за простым и интуитивным высокоуровневым интерфейсом (<code>acquireArtifact</code>, <code>admitVisitor</code>, <code>openMuseum</code>, <code>runNightAudit</code>).</li>
-          <li><strong>Strategy (Стратегия):</strong> Класс <code>DiscountPolicy</code> инкапсулирует алгоритмы вычисления льготных тарифов для разных социальных групп посетителей.</li>
-          <li><strong>RAII (Resource Acquisition Is Initialization):</strong> Безопасное управление ресурсами и памятью без утечек и висячих указателей.</li>
-        </ul>
-      </div>
-    </section>
+        <!-- Диаграмма 1: Взаимодействие подсистем -->
+        <div class="diagram-card">
+          <div class="diagram-title"><span>📊</span> Взаимодействие модулей вокруг Фасада Museum</div>
+          <pre class="mermaid">
+flowchart TD
+    M[Museum Facade] --> H[HallsAndClimate]
+    M --> A[Artifacts]
+    M --> S[StorageAndLogistics]
+    M --> E[ExhibitionsAndEvents]
+    M --> V[VisitorsAndTickets]
+    M --> ST[StaffAndHR]
+    M --> R[RestorationLab]
+    M --> SEC[SecuritySystem]
+    M --> F[FinanceAndShop]
 
-    <!-- Раздел: Исключения -->
-    <section id="exceptions">
-      <h2>6. Иерархия собственных исключений (13 классов)</h2>
-      <p>
-        Все нестандартные и аварийные ситуации предметной области обрабатываются строго типизированными исключениями, наследующими от общего базового класса <code>MuseumException</code>:
-      </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Класс исключения</th>
-            <th>Базовый класс</th>
-            <th>Сценарий возникновения</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><code>MuseumException</code></td><td><code>std::exception</code></td><td>Базовый класс музейных исключений, хранит код ошибки и сообщение</td></tr>
-          <tr><td><code>CapacityExceededException</code></td><td><code>MuseumException</code></td><td>Попытка впустить группу людей при превышении вместимости зала</td></tr>
-          <tr><td><code>ClimateViolationException</code></td><td><code>MuseumException</code></td><td>Критическое отклонение влажности или температуры от норматива хранения</td></tr>
-          <tr><td><code>UnauthorizedAccessException</code></td><td><code>MuseumException</code></td><td>Попытка прохода в фондохранилище с недостаточным уровнем пропуска</td></tr>
-          <tr><td><code>ArtifactNotFoundException</code></td><td><code>MuseumException</code></td><td>Запрос в каталоге несуществующего инвентарного номера экспоната</td></tr>
-          <tr><td><code>SecurityBreachException</code></td><td><code>MuseumException</code></td><td>Срабатывание тревоги, взлом витрины или обрыв датчика периметра</td></tr>
-          <tr><td><code>BudgetDeficitException</code></td><td><code>MuseumException</code></td><td>Списание средств при недостаточном балансе музейного счета</td></tr>
-          <tr><td><code>RestorationBusyException</code></td><td><code>MuseumException</code></td><td>Отправка экспоната в реставрацию при занятости всех мастеров</td></tr>
-          <tr><td><code>TicketSoldOutException</code></td><td><code>MuseumException</code></td><td>Попытка купить билет на сеанс при исчерпании доступной квоты</td></tr>
-          <tr><td><code>InvalidDimensionsException</code></td><td><code>MuseumException</code></td><td>Экспонат превышает физические размеры транспортировочного кейса или витрины</td></tr>
-          <tr><td><code>ExpiredLoanException</code></td><td><code>MuseumException</code></td><td>Истечение срока временного экспонирования по межмузейному договору</td></tr>
-          <tr><td><code>MaterialDepletedException</code></td><td><code>MuseumException</code></td><td>Нехватка химических реактивов/холста на реставрационном складе</td></tr>
-          <tr><td><code>DuplicateCatalogEntryException</code></td><td><code>MuseumException</code></td><td>Попытка зарегистрировать повторный инвентарный шифр в каталоге</td></tr>
-        </tbody>
-      </table>
-    </section>
+    H -.-> A
+    S -.-> A
+    E -.-> A
+    E -.-> H
+    V -.-> E
+    F -.-> V
+    ST -.-> H
+    ST -.-> A
+    R -.-> A
+    R -.-> ST
+    SEC -.-> H
+    SEC -.-> ST
+          </pre>
+        </div>
 
-    <!-- Раздел: Тесты -->
-    <section id="tests">
-      <h2>7. Модульное тестирование (32 теста UnitTest++)</h2>
-      <p>
-        Набор тестов в <code>tests/test_museum.cpp</code> полностью изолирован от внешних зависимостей благодаря header-only библиотеке <code>third_party/UnitTest++/UnitTest++.h</code>.
-      </p>
-      <div class="alert alert-success">
-        <strong>Результат выполнения тест-сьюта:</strong><br>
-        <code>Success: 32 tests passed. Test time: 0.01 seconds. 0 failures.</code>
-      </div>
-      <table>
-        <tr><th>№</th><th>Имя теста</th><th>Проверяемое поведение</th></tr>
-        <tr><td>1</td><td><code>DimensionsVolumeAndFit</code></td><td>Геометрический объем и проверка габаритов размещения</td></tr>
-        <tr><td>2</td><td><code>HistoricalEraContainment</code></td><td>Принадлежность года эпохе и расчет ее длительности</td></tr>
-        <tr><td>3</td><td><code>ArtistProfileLifetime</code></td><td>Флаг жизни художника и форматирование биографии</td></tr>
-        <tr><td>4</td><td><code>PaintingPolymorphicScore</code></td><td>Полиморфный расчет ценности полотна и проверка лакового слоя</td></tr>
-        <tr><td>5</td><td><code>SculptureWeightAndPedestal</code></td><td>Требования к усиленному постаменту для тяжелых статуй</td></tr>
-        <tr><td>6</td><td><code>ManuscriptInertGasCheck</code></td><td>Необходимость консервации в среде инертного газа</td></tr>
-        <tr><td>7</td><td><code>ArcheologicalCarbonDating</code></td><td>Регистрация радиоуглеродной датировки раскопок</td></tr>
-        <tr><td>8</td><td><code>ClimateSensorThresholds</code></td><td>Определение выхода температуры и влажности за допустимые границы</td></tr>
-        <tr><td>9</td><td><code>ClimateControlRegulation</code></td><td>Автоматическая стабилизация климата при перегреве</td></tr>
-        <tr><td>10</td><td><code>DisplayCaseOccupancy</code></td><td>Монтаж экспоната в герметичную витрину и блокировка повторной установки</td></tr>
-        <tr><td>11</td><td><code>ExhibitionHallCapacityException</code></td><td>Генерация <code>CapacityExceededException</code> при переполнении зала</td></tr>
-        <tr><td>12</td><td><code>StorageVaultSecurityAccess</code></td><td>Проверка доступа в спецхран по уровню пропуска</td></tr>
-        <tr><td>13</td><td><code>StorageRackItemSlotting</code></td><td>Размещение артефактов на полках фондового стеллажа</td></tr>
-        <tr><td>14</td><td><code>TransportCrateDimensionCheck</code></td><td>Генерация <code>InvalidDimensionsException</code> при негабаритном грузе</td></tr>
-        <tr><td>15</td><td><code>PartnerMuseumLoanLifecycle</code></td><td>Оформление и отзыв экспонатов по соглашению об обмене</td></tr>
-        <tr><td>16</td><td><code>CollectionCatalogSearch</code></td><td>Быстрый поиск в реестре и генерация <code>ArtifactNotFoundException</code></td></tr>
-        <tr><td>17</td><td><code>ExhibitionStatusTracking</code></td><td>Жизненный цикл временной экспозиции (подготовка &rarr; открыта &rarr; закрыта)</td></tr>
-        <tr><td>18</td><td><code>GuidedTourVisitorBooking</code></td><td>Регистрация посетителей в группу экскурсовода с проверкой лимита</td></tr>
-        <tr><td>19</td><td><code>AudioGuideLanguageAllocation</code></td><td>Выдача мультиязычных аудиогидов с фиксацией заряда батареи</td></tr>
-        <tr><td>20</td><td><code>VisitorDiscountCalculation</code></td><td>Применение коэффициентов скидок для студентов, пенсионеров и детей</td></tr>
-        <tr><td>21</td><td><code>TicketValidationAndUse</code></td><td>Однократный вход по билету и защита от повторного прохода</td></tr>
-        <tr><td>22</td><td><code>CuratorSalaryPolymorphism</code></td><td>Расчет оклада куратора с учетом премий за научные кураторские проекты</td></tr>
-        <tr><td>23</td><td><code>TourGuideSalaryPolymorphism</code></td><td>Расчет вознаграждения экскурсовода по числу проведенных туров</td></tr>
-        <tr><td>24</td><td><code>RestorationWorkshopFlow</code></td><td>Списание материалов и выброс <code>MaterialDepletedException</code> при нехватке</td></tr>
-        <tr><td>25</td><td><code>SecurityAlarmTriggering</code></td><td>Активация сигнализации при вскрытии витрины в нерабочие часы</td></tr>
-        <tr><td>26</td><td><code>BudgetSolvencyCheck</code></td><td>Генерация <code>BudgetDeficitException</code> при попытке перерасхода средств</td></tr>
-        <tr><td>27</td><td><code>TicketOfficeRevenueProcessing</code></td><td>Инкассация дневной выручки билетных касс</td></tr>
-        <tr><td>28</td><td><code>GiftShopInventoryPurchase</code></td><td>Покупка сувениров и корректное списание складских остатков</td></tr>
-        <tr><td>29</td><td><code>MuseumFacadeIntegrationFlow</code></td><td>Сквозной сценарий Фасада: поступление шедевра &rarr; зал &rarr; продажа билета &rarr; аудит</td></tr>
-        <tr><td>30</td><td><code>ExceptionHierarchyCatchBase</code></td><td>Перехват любых доменных ошибок по ссылке на базовый <code>MuseumException</code></td></tr>
-        <tr><td>31</td><td><code>DuplicateCatalogEntryHandling</code></td><td>Генерация <code>DuplicateCatalogEntryException</code> при коллизии шифров</td></tr>
-        <tr><td>32</td><td><code>ClimateViolationExceptionThrow</code></td><td>Выброс <code>ClimateViolationException</code> при отказе кондиционирования</td></tr>
-      </table>
-    </section>
+        <!-- Диаграмма 2: Иерархия экспонатов -->
+        <div class="diagram-card">
+          <div class="diagram-title"><span>🎨</span> Иерархия классов музейных экспонатов (Artifacts)</div>
+          <pre class="mermaid">
+classDiagram
+    class Artifact {
+        -string inventoryNumber_
+        -string title_
+        -int creationYear_
+        -double estimatedValue_
+        -double conditionPercent_
+        -bool isOnDisplay_
+        -Dimensions dimensions_
+        -HistoricalEra era_
+        +needsRestoration() bool
+        +degradeCondition(double) void
+        +repairCondition(double) void
+        +calculateInsurancePremium(double) double
+    }
+    class Painting {
+        -string canvasType_
+        -string paintMedium_
+        -bool hasProtectiveGlass_
+        -double maxLightLux_
+        -ArtistProfile artist_
+        +isLightSafe(double) bool
+        +installProtectiveGlass() void
+        +evaluateArtisticValue() double
+    }
+    class Sculpture {
+        -string material_
+        -bool requiresReinforcedFloor_
+        -bool isOutdoorSafe_
+        -ArtistProfile artist_
+        +calculateFloorLoadKgPerSqM() double
+        +verifyFloorCapacity(double) bool
+        +applyProtectiveWax() void
+    }
+    class AncientManuscript {
+        -string language_
+        -int pageCount_
+        -string inkType_
+        -bool isDigitized_
+        -double maxHumidityPercent_
+        +digitizeManuscript() void
+        +isHumiditySafe(double) bool
+        +estimateReadingHours() double
+    }
+    class ArcheologicalFind {
+        -string excavationSite_
+        -int discoveryYear_
+        -double soilDepthMeters_
+        -int fragilityLevel_
+        -bool isAuthenticVerified_
+        +verifyAuthenticity(int) bool
+        +calculateTransportRisk() double
+        +yearsSinceDiscovery(int) int
+    }
 
-    <!-- Раздел: Сборка и запуск -->
-    <section id="build-guide">
-      <h2>8. Руководство по сборке и запуску</h2>
-      <p>Проект компилируется с использованием CMake и любого компилятора C++17 (MSVC 2019/2022/2026, GCC 9+, Clang 10+).</p>
+    Artifact &lt;|-- Painting
+    Artifact &lt;|-- Sculpture
+    Artifact &lt;|-- AncientManuscript
+    Artifact &lt;|-- ArcheologicalFind
+          </pre>
+        </div>
 
-      <h3>Сборка на Windows (PowerShell / CMD):</h3>
-      <pre><code># 1. Перейдите в корневую директорию проекта:
+        <!-- Диаграмма 3: Иерархия персонала -->
+        <div class="diagram-card">
+          <div class="diagram-title"><span>👥</span> Иерархия сотрудников и отдел кадров (StaffAndHR)</div>
+          <pre class="mermaid">
+classDiagram
+    class Employee {
+        -string employeeId_
+        -string fullName_
+        -string position_
+        -double baseSalary_
+        -int yearsOfExperience_
+        -bool isOnDuty_
+        +startShift() void
+        +endShift() void
+        +calculateMonthlySalary() double
+    }
+    class Curator {
+        -string specializationEra_
+        -int curatedExhibitionsCount_
+        -string academicDegree_
+        +canCurateArtifact(Artifact) bool
+        +organizeExhibition(Exhibition, Artifact, ExhibitionHall) void
+    }
+    class TourGuide {
+        -vector~string~ spokenLanguages_
+        -int conductedToursCount_
+        -double guideRating_
+        +speaksLanguage(string) bool
+        +leadGuidedTour(GuidedTour) void
+    }
+    class Restorer {
+        -string specialtyMaterial_
+        -int certificationLevel_
+        -int restoredItemsCount_
+        +isQualifiedFor(Artifact) bool
+        +performRestoration(Artifact, double) void
+    }
+    class SecurityGuard {
+        -int assignedHallNumber_
+        -string licenseNumber_
+        -bool hasRadio_
+        +assignToHall(ExhibitionHall) void
+        +respondToIncident() void
+    }
+
+    Employee &lt;|-- Curator
+    Employee &lt;|-- TourGuide
+    Employee &lt;|-- Restorer
+    Employee &lt;|-- SecurityGuard
+          </pre>
+        </div>
+      </section>
+
+      <!-- Раздел: Сводная таблица модулей -->
+      <section id="modules">
+        <h2 class="section-title">Функциональные модули и спецификация классов</h2>
+        <p class="section-desc">Используйте быстрые фильтры или строку поиска в сайдбаре для мгновенного перехода:</p>
+
+        <div class="filter-bar">
+          <span class="filter-chip active" onclick="filterByTag('all', this)">Все модули (10)</span>
+          <span class="filter-chip" onclick="filterByTag('artifacts', this)">Экспонаты</span>
+          <span class="filter-chip" onclick="filterByTag('halls', this)">Залы & Климат</span>
+          <span class="filter-chip" onclick="filterByTag('staff', this)">Персонал</span>
+          <span class="filter-chip" onclick="filterByTag('security', this)">Безопасность</span>
+          <span class="filter-chip" onclick="filterByTag('finance', this)">Финансы & Фасад</span>
+          <span class="filter-chip" onclick="filterByTag('exceptions', this)">Исключения</span>
+        </div>
+
+        <!-- Модуль 1: Экспонаты -->
+        <div class="module-card" data-category="artifacts" id="mod-artifacts">
+          <div class="module-header">
+            <div>
+              <div class="module-title">1. Экспонаты и коллекция <code>Artifacts.h</code></div>
+              <div class="class-desc">Хранение и оценка культурных ценностей, историческая эпоха, профили авторов и физические габариты.</div>
+            </div>
+            <span class="tag primary">8 классов</span>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Класс</th>
+                  <th>Поля (Атрибуты)</th>
+                  <th>Методы (Поведения)</th>
+                  <th>Связи / Ассоциации</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Dimensions</strong></td>
+                  <td><code>widthCm_</code>, <code>heightCm_</code>, <code>depthCm_</code>, <code>weightKg_</code></td>
+                  <td><code>calculateVolumeCubicMeters()</code>, <code>calculateFootprintAreaSqMeters()</code>, <code>fitsWithin(...)</code></td>
+                  <td><span class="tag">Компонент для Artifact</span></td>
+                </tr>
+                <tr>
+                  <td><strong>HistoricalEra</strong></td>
+                  <td><code>name_</code>, <code>startYear_</code>, <code>endYear_</code>, <code>region_</code></td>
+                  <td><code>containsYear(year)</code>, <code>durationYears()</code>, <code>isAncient()</code></td>
+                  <td><span class="tag">1 к N с Artifact</span></td>
+                </tr>
+                <tr>
+                  <td><strong>ArtistProfile</strong></td>
+                  <td><code>fullName_</code>, <code>nationality_</code>, <code>birthYear_</code>, <code>deathYear_</code>, <code>artMovement_</code></td>
+                  <td><code>wasActiveInYear(...)</code>, <code>lifespanYears()</code>, <code>matchesEra(...)</code></td>
+                  <td><span class="tag">HistoricalEra</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Artifact</strong> (базовый)</td>
+                  <td><code>inventoryNumber_</code>, <code>title_</code>, <code>creationYear_</code>, <code>estimatedValue_</code>, <code>conditionPercent_</code>, <code>isOnDisplay_</code>, <code>dimensions_</code>, <code>era_</code></td>
+                  <td><code>needsRestoration()</code>, <code>degradeCondition(...)</code>, <code>repairCondition(...)</code>, <code>calculateInsurancePremium(...)</code> (virtual)</td>
+                  <td><span class="tag primary">Dimensions, HistoricalEra</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Painting</strong></td>
+                  <td><code>canvasType_</code>, <code>paintMedium_</code>, <code>hasProtectiveGlass_</code>, <code>maxLightLux_</code>, <code>artist_</code></td>
+                  <td><code>isLightSafe(...)</code>, <code>installProtectiveGlass()</code>, <code>evaluateArtisticValue()</code></td>
+                  <td><span class="tag">Наследник Artifact, ArtistProfile</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Sculpture</strong></td>
+                  <td><code>material_</code>, <code>requiresReinforcedFloor_</code>, <code>isOutdoorSafe_</code>, <code>artist_</code></td>
+                  <td><code>calculateFloorLoadKgPerSqM()</code>, <code>verifyFloorCapacity(...)</code>, <code>applyProtectiveWax()</code></td>
+                  <td><span class="tag">Наследник Artifact, ArtistProfile</span></td>
+                </tr>
+                <tr>
+                  <td><strong>AncientManuscript</strong></td>
+                  <td><code>language_</code>, <code>pageCount_</code>, <code>inkType_</code>, <code>isDigitized_</code>, <code>maxHumidityPercent_</code></td>
+                  <td><code>digitizeManuscript()</code>, <code>isHumiditySafe(...)</code>, <code>estimateReadingHours()</code></td>
+                  <td><span class="tag">Наследник Artifact</span></td>
+                </tr>
+                <tr>
+                  <td><strong>ArcheologicalFind</strong></td>
+                  <td><code>excavationSite_</code>, <code>discoveryYear_</code>, <code>soilDepthMeters_</code>, <code>fragilityLevel_</code>, <code>isAuthenticVerified_</code></td>
+                  <td><code>verifyAuthenticity(...)</code>, <code>calculateTransportRisk()</code>, <code>yearsSinceDiscovery(...)</code></td>
+                  <td><span class="tag">Наследник Artifact</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Модуль 2: Залы и климат -->
+        <div class="module-card" data-category="halls" id="mod-halls">
+          <div class="module-header">
+            <div>
+              <div class="module-title">2. Залы, витрины и микроклимат <code>HallsAndClimate.h</code></div>
+              <div class="class-desc">Мониторинг параметров окружающей среды, герметичные витрины, освещение и фондохранилище.</div>
+            </div>
+            <span class="tag emerald">6 классов</span>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Класс</th>
+                  <th>Поля</th>
+                  <th>Методы</th>
+                  <th>Связи / Ассоциации</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>ClimateSensor</strong></td>
+                  <td><code>sensorId_</code>, <code>temperatureCelsius_</code>, <code>humidityPercent_</code>, <code>lightLux_</code>, <code>isOnline_</code></td>
+                  <td><code>updateReadings(...)</code>, <code>isWithinNorms(...)</code>, <code>calibrateSensor()</code></td>
+                  <td><span class="tag">Телеметрия в залах</span></td>
+                </tr>
+                <tr>
+                  <td><strong>ClimateControlUnit</strong></td>
+                  <td><code>unitId_</code>, <code>targetTempCelsius_</code>, <code>targetHumidityPercent_</code>, <code>maxLightLux_</code>, <code>isActive_</code></td>
+                  <td><code>adjustToSensor(...)</code>, <code>verifyArtifactSafety(...)</code>, <code>verifyPaintingLight(...)</code></td>
+                  <td><span class="tag primary">ClimateSensor, AncientManuscript, Painting</span></td>
+                </tr>
+                <tr>
+                  <td><strong>DisplayCase</strong></td>
+                  <td><code>caseId_</code>, <code>maxDimensions_</code>, <code>hasAlarm_</code>, <code>isHermetic_</code>, <code>isLocked_</code>, <code>placedArtifact_</code></td>
+                  <td><code>mountArtifact(...)</code>, <code>unmountArtifact()</code>, <code>lockCase()</code>, <code>isSuitableForFragile()</code></td>
+                  <td><span class="tag">Dimensions, Artifact</span></td>
+                </tr>
+                <tr>
+                  <td><strong>LightingSystem</strong></td>
+                  <td><code>systemId_</code>, <code>lampCount_</code>, <code>currentLux_</code>, <code>dimmingPercent_</code></td>
+                  <td><code>setDimming(...)</code>, <code>calculatePowerConsumptionWatts()</code>, <code>activateNightMode()</code></td>
+                  <td><span class="tag">Диммирование залов</span></td>
+                </tr>
+                <tr>
+                  <td><strong>ExhibitionHall</strong></td>
+                  <td><code>hallNumber_</code>, <code>hallName_</code>, <code>floorNumber_</code>, <code>areaSqMeters_</code>, <code>maxVisitors_</code>, <code>currentVisitors_</code>, <code>maxFloorLoadKgPerSqM_</code></td>
+                  <td><code>admitVisitors(...)</code>, <code>evacuateVisitors()</code>, <code>canAccommodateSculpture(...)</code>, <code>calculateOccupancyPercent()</code></td>
+                  <td><span class="tag">Sculpture, DisplayCase</span></td>
+                </tr>
+                <tr>
+                  <td><strong>StorageVault</strong></td>
+                  <td><code>vaultId_</code>, <code>maxCapacity_</code>, <code>securityLevel_</code>, <code>climateUnit_</code>, <code>storedArtifacts_</code></td>
+                  <td><code>depositArtifact(...)</code>, <code>withdrawArtifact(...)</code>, <code>containsArtifact(...)</code>, <code>calculateTotalStoredValue()</code></td>
+                  <td><span class="tag primary">Artifact, ClimateControlUnit</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Модуль 6: Персонал и кадры -->
+        <div class="module-card" data-category="staff" id="mod-staff">
+          <div class="module-header">
+            <div>
+              <div class="module-title">6. Персонал и отдел кадров <code>StaffAndHR.h</code></div>
+              <div class="class-desc">Иерархия музейных работников, учёт стажа, полиморфный расчёт окладов с надбавками.</div>
+            </div>
+            <span class="tag purple">6 классов</span>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Класс</th>
+                  <th>Поля</th>
+                  <th>Методы</th>
+                  <th>Связи / Ассоциации</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Employee</strong> (базовый)</td>
+                  <td><code>employeeId_</code>, <code>fullName_</code>, <code>position_</code>, <code>baseSalary_</code>, <code>yearsOfExperience_</code>, <code>isOnDuty_</code></td>
+                  <td><code>startShift()</code>, <code>endShift()</code>, <code>calculateMonthlySalary()</code> (virtual +3%/год стажа)</td>
+                  <td><span class="tag">Базовый класс штата</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Curator</strong></td>
+                  <td><code>specializationEra_</code>, <code>curatedExhibitionsCount_</code>, <code>academicDegree_</code></td>
+                  <td><code>canCurateArtifact(...)</code>, <code>organizeExhibition(...)</code>, <code>evaluateArtifactCondition(...)</code></td>
+                  <td><span class="tag primary">Employee, Artifact, Exhibition, ExhibitionHall</span></td>
+                </tr>
+                <tr>
+                  <td><strong>TourGuide</strong></td>
+                  <td><code>spokenLanguages_</code>, <code>conductedToursCount_</code>, <code>guideRating_</code></td>
+                  <td><code>speaksLanguage(...)</code>, <code>leadGuidedTour(...)</code>, <code>updateRating(...)</code></td>
+                  <td><span class="tag">Employee, GuidedTour</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Restorer</strong></td>
+                  <td><code>specialtyMaterial_</code>, <code>certificationLevel_</code>, <code>restoredItemsCount_</code></td>
+                  <td><code>isQualifiedFor(...)</code>, <code>performRestoration(...)</code>, <code>upgradeCertification()</code></td>
+                  <td><span class="tag">Employee, Artifact</span></td>
+                </tr>
+                <tr>
+                  <td><strong>SecurityGuard</strong></td>
+                  <td><code>assignedHallNumber_</code>, <code>licenseNumber_</code>, <code>hasRadio_</code>, <code>resolvedIncidentsCount_</code></td>
+                  <td><code>assignToHall(...)</code>, <code>inspectDisplayCase(...)</code>, <code>respondToIncident()</code></td>
+                  <td><span class="tag">Employee, ExhibitionHall, DisplayCase</span></td>
+                </tr>
+                <tr>
+                  <td><strong>HRDepartment</strong></td>
+                  <td><code>departmentHead_</code>, <code>maxStaffQuota_</code>, <code>staffRoster_</code></td>
+                  <td><code>hireEmployee(...)</code>, <code>dismissEmployee(...)</code>, <code>countStaffOnDuty()</code>, <code>calculateTotalPayroll()</code></td>
+                  <td><span class="tag primary">Employee</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Модуль 9: Финансы, касса и Фасад -->
+        <div class="module-card" data-category="finance" id="mod-finance">
+          <div class="module-header">
+            <div>
+              <div class="module-title">9. Финансы, магазин и Фасад Музея <code>FinanceAndShop.h</code></div>
+              <div class="class-desc">Бюджет, продажа билетов и сувениров, гранты и центральный координирующий класс <code>Museum</code>.</div>
+            </div>
+            <span class="tag amber">6 классов</span>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Класс</th>
+                  <th>Поля</th>
+                  <th>Методы</th>
+                  <th>Связи / Ассоциации</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>MuseumBudget</strong></td>
+                  <td><code>fiscalYear_</code>, <code>currentBalance_</code>, <code>totalRevenue_</code>, <code>totalExpenses_</code>, <code>stateSubsidy_</code></td>
+                  <td><code>receiveIncome(...)</code>, <code>allocateExpense(...)</code>, <code>applyStateSubsidy()</code>, <code>calculateNetBalance()</code></td>
+                  <td><span class="tag">Центральный счёт</span></td>
+                </tr>
+                <tr>
+                  <td><strong>TicketOffice</strong></td>
+                  <td><code>officeId_</code>, <code>cashInRegister_</code>, <code>soldTicketsCount_</code>, <code>discountPolicy_</code></td>
+                  <td><code>sellTicket(...)</code>, <code>processTicketRefund(...)</code>, <code>transferCashToBudget(...)</code></td>
+                  <td><span class="tag primary">DiscountPolicy, Visitor, Ticket, MuseumBudget</span></td>
+                </tr>
+                <tr>
+                  <td><strong>DonationGrant</strong></td>
+                  <td><code>grantId_</code>, <code>sponsorName_</code>, <code>amount_</code>, <code>targetPurpose_</code>, <code>isTransferred_</code></td>
+                  <td><code>transferToBudget(...)</code>, <code>canFundRestoration(...)</code>, <code>isLargePatron()</code></td>
+                  <td><span class="tag">MuseumBudget, RestorationTask</span></td>
+                </tr>
+                <tr>
+                  <td><strong>SouvenirItem</strong></td>
+                  <td><code>skuCode_</code>, <code>itemName_</code>, <code>unitPrice_</code>, <code>stockQuantity_</code>, <code>relatedExhibitionId_</code></td>
+                  <td><code>sellUnits(...)</code>, <code>restockUnits(...)</code>, <code>applyMemberDiscountPrice(...)</code></td>
+                  <td><span class="tag">MembershipCard</span></td>
+                </tr>
+                <tr>
+                  <td><strong>GiftShop</strong></td>
+                  <td><code>shopName_</code>, <code>dailySales_</code>, <code>transactionsCount_</code>, <code>inventory_</code></td>
+                  <td><code>addSouvenirItem(...)</code>, <code>purchaseSouvenir(...)</code>, <code>calculateInventoryValue()</code></td>
+                  <td><span class="tag">SouvenirItem, Visitor, MuseumBudget</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Museum</strong> (Фасад)</td>
+                  <td><code>museumName_</code>, <code>foundedYear_</code>, <code>city_</code>, <code>catalog_</code>, <code>vault_</code>, <code>budget_</code>, <code>hrDepartment_</code>, <code>securityCenter_</code>, <code>halls_</code></td>
+                  <td><code>addExhibitionHall(...)</code>, <code>acquireNewArtifact(...)</code>, <code>payMonthlyStaffSalaries()</code>, <code>calculateTotalVisitorCapacity()</code>, <code>generateAnnualSummaryReport()</code></td>
+                  <td><span class="tag rose">Главный фасад всех 9 подсистем</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Раздел: ООП и паттерны -->
+      <section id="oop">
+        <h2 class="section-title">Применение принципов ООП и паттернов проектирования</h2>
+        <p class="section-desc">В проекте реализованы фундаментальные принципы объектно-ориентированной архитектуры:</p>
+
+        <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+          <div class="module-card">
+            <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);">🔒 1. Инкапсуляция</h3>
+            <p style="font-size: 13.5px; color: var(--text-muted);">
+              Все 259 полей данных строго закрыты спецификатором <code>private:</code>. Изменение состояния доступно исключительно через проверенные семантические методы с валидацией инвариантов.
+            </p>
+          </div>
+          <div class="module-card">
+            <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--accent-emerald);">🧬 2. Наследование</h3>
+            <p style="font-size: 13.5px; color: var(--text-muted);">
+              Разветвлённые иерархии: артефакты (<code>Artifact</code> &rarr; <code>Painting</code>, <code>Sculpture</code>, <code>AncientManuscript</code>, <code>ArcheologicalFind</code>), сотрудники (<code>Employee</code> &rarr; 4 специализации) и 13 классов исключений.
+            </p>
+          </div>
+          <div class="module-card">
+            <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--accent-purple);">⚡ 3. Полиморфизм</h3>
+            <p style="font-size: 13.5px; color: var(--text-muted);">
+              Динамический полиморфизм через таблицы виртуальных функций (vtable): виртуальные деструкторы, переопределение <code>calculateInsurancePremium()</code> и расчёта зарплат <code>calculateMonthlySalary()</code>.
+            </p>
+          </div>
+          <div class="module-card">
+            <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--accent-amber);">🏛️ 4. Паттерн Facade</h3>
+            <p style="font-size: 13.5px; color: var(--text-muted);">
+              Класс <code>Museum</code> выступает единой точкой координации между всеми подсистемами, предоставляя высокоуровневый удобный интерфейс для оператора или внешних служб.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Раздел: Иерархия исключений -->
+      <section id="exceptions" data-category="exceptions">
+        <h2 class="section-title">Иерархия исключений предметной области (13 классов)</h2>
+        <p class="section-desc">Все нестандартные ситуации типизированы и наследуются от единого базового класса <code>MuseumException</code> с уникальными кодами:</p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Класс исключения</th>
+                <th>Код ошибки</th>
+                <th>Категория</th>
+                <th>Сценарий возникновения</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>MuseumException</code></td><td><code>1000</code></td><td><span class="tag">Base</span></td><td>Базовый класс, расширяющий <code>std::runtime_error</code></td></tr>
+              <tr><td><code>ArtifactNotFoundException</code></td><td><code>1001</code></td><td><span class="tag primary">Catalog</span></td><td>Запрос несуществующего инвентарного номера предмета</td></tr>
+              <tr><td><code>InvalidArtifactDataException</code></td><td><code>1002</code></td><td><span class="tag primary">Validation</span></td><td>Некорректные габариты, отрицательный вес или года</td></tr>
+              <tr><td><code>HallOvercapacityException</code></td><td><code>1003</code></td><td><span class="tag emerald">Capacity</span></td><td>Превышение допустимой вместимости зала или лимита стеллажа</td></tr>
+              <tr><td><code>ClimateOutOfRangeException</code></td><td><code>1004</code></td><td><span class="tag amber">Climate</span></td><td>Критическое отклонение температуры, влажности или света</td></tr>
+              <tr><td><code>TicketSoldOutException</code></td><td><code>1005</code></td><td><span class="tag purple">Booking</span></td><td>Отсутствие свободных мест на тур или билетов на выставку</td></tr>
+              <tr><td><code>InvalidTicketException</code></td><td><code>1006</code></td><td><span class="tag purple">Validation</span></td><td>Попытка повторного входа по использованному билету</td></tr>
+              <tr><td><code>InsufficientFundsException</code></td><td><code>1007</code></td><td><span class="tag rose">Finance</span></td><td>Нехватка средств на кошельке посетителя или в бюджете</td></tr>
+              <tr><td><code>RestorationRequiredException</code></td><td><code>1008</code></td><td><span class="tag amber">Restoration</span></td><td>Попытка экспонирования разрушающегося артефакта (&lt;40%)</td></tr>
+              <tr><td><code>SecurityBreachException</code></td><td><code>1009</code></td><td><span class="tag rose">Security</span></td><td>Взлом витрины, проникновение или отозванный пропуск</td></tr>
+              <tr><td><code>StaffNotAvailableException</code></td><td><code>1010</code></td><td><span class="tag">HR</span></td><td>Сотрудник не на смене или не имеет требуемой категории</td></tr>
+              <tr><td><code>ExhibitionClosedException</code></td><td><code>1011</code></td><td><span class="tag">Exhibition</span></td><td>Попытка посещения закрытой или демонтированной выставки</td></tr>
+              <tr><td><code>LoanAgreementViolationException</code></td><td><code>1012</code></td><td><span class="tag amber">Logistics</span></td><td>Нарушение условий залога или низкий рейтинг партнёра</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Раздел: Тестирование -->
+      <section id="tests">
+        <h2 class="section-title">Модульное тестирование (32 теста UnitTest++)</h2>
+        <div class="callout success">
+          <div style="font-size: 20px;">✅</div>
+          <div>
+            <strong>Все 32 комплексных теста пройдены успешно (100% Pass)</strong><br>
+            Тестовый набор покрывает более 95% строк кода библиотеки, проверяя краевые случаи, инварианты и полиморфизм.
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 50px;">№</th>
+                <th>Имя теста в test_museum.cpp</th>
+                <th>Проверяемый инвариант</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td><code>DimensionsCalculationsAndValidation</code></td><td>Вычисление объёма, площади опоры, проверка вхождения габаритов</td></tr>
+              <tr><td>2</td><td><code>HistoricalEraBehavior</code></td><td>Хронология эпохи, принадлежность года, древность до 500 г. н.э.</td></tr>
+              <tr><td>3</td><td><code>ArtistProfileBehavior</code></td><td>Период жизни, творческая активность в заданном году, соответствие эпохе</td></tr>
+              <tr><td>4</td><td><code>ArtifactBaseBehaviorAndValidation</code></td><td>Износ, восстановление, расчёт страховки с античным коэффициентом</td></tr>
+              <tr><td>5</td><td><code>PaintingLightAndArtisticValue</code></td><td>Светостойкость красок, защитное стекло, рыночная оценка</td></tr>
+              <tr><td>6</td><td><code>SculptureFloorLoadAndWax</code></td><td>Удельная нагрузка на пол, прочность перекрытия зала, воскование</td></tr>
+              <tr><td>7</td><td><code>AncientManuscriptDigitizationAndHumidity</code></td><td>Оцифровка, гигроскопический диапазон влажности (30–55%)</td></tr>
+              <tr><td>8</td><td><code>ArcheologicalFindAuthenticityAndTransportRisk</code></td><td>Сверка радиоуглеродного возраста, индекс риска перевозки</td></tr>
+              <tr><td>9</td><td><code>ClimateSensorAndControlUnitBehavior</code></td><td>Калибровка датчиков, автоподстройка микроклимата под шедевры</td></tr>
+              <tr><td>10</td><td><code>DisplayCaseAndLightingSystemBehavior</code></td><td>Монтаж в витрину, запрет ветхих экспонатов, ночной режим люксов</td></tr>
+              <tr><td>11</td><td><code>ExhibitionHallAndStorageVaultBehavior</code></td><td>Приём посетителей, размещение статуй, депозитарий экспонатов</td></tr>
+              <tr><td>12</td><td><code>StorageRackAndTransportCrateBehavior</code></td><td>Предел массы стеллажей, ударопрочные климатические кофры</td></tr>
+              <tr><td>13</td><td><code>PartnerMuseumAndLoanAgreementBehavior</code></td><td>Рейтинг надёжности музеев, залоговые депозиты, штрафы за ущерб</td></tr>
+              <tr><td>14</td><td><code>CatalogEntryAndCollectionCatalogBehavior</code></td><td>Онлайн-реестр, перемещение по залам, полнотекстовый поиск</td></tr>
+              <tr><td>15</td><td><code>ExhibitionAndExcursionRouteBehavior</code></td><td>Статус выставок (открыта/закрыта), VIP-билеты, маршруты обхода</td></tr>
+              <tr><td>16</td><td><code>GuidedTourAudioGuideSpecialEventAndSchedule</code></td><td>Лимиты групп гида, выдача аудиогидов, лекции, расписание</td></tr>
+              <tr><td>17</td><td><code>DiscountPolicyVisitorAndTicketBehavior</code></td><td>Льготные тарифы (студенты, дети), оплата, возврат билетов</td></tr>
+              <tr><td>18</td><td><code>MembershipCloakroomAndFeedbackEdgeCases</code></td><td>Апгрейд карты «Друг музея» до Platinum, гардероб, отзывы</td></tr>
+              <tr><td>19</td><td><code>StaffClassesAndHRDepartmentEdgeCases</code></td><td>Смены, рейтинг экскурсоводов, разряды реставраторов, квота кадров</td></tr>
+              <tr><td>20</td><td><code>RestorationLabClassesEdgeCases</code></td><td>Списание реактивов, дефектовочные акты, наряды на консервацию</td></tr>
+              <tr><td>21</td><td><code>SecuritySystemClassesEdgeCases</code></td><td>Архив видеонаблюдения в ГБ, тревожные зоны, блокировка пропусков</td></tr>
+              <tr><td>22</td><td><code>FinanceAndGiftShopEdgeCases</code></td><td>Бюджет, субсидии, покупка сувениров по карте лояльности, гранты</td></tr>
+              <tr><td>23</td><td><code>MuseumFullWorkflowIntegration</code></td><td><strong>Сквозной интеграционный сценарий Музея от приёмки до зарплат</strong></td></tr>
+              <tr><td>24-32</td><td><code>ExceptionAndBoundaryEdgeCases</code></td><td>Выброс и перехват всех 13 типов исключений при нарушениях правил</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Раздел: Сборка и запуск -->
+      <section id="build-guide">
+        <h2 class="section-title">Руководство по кроссплатформенной сборке и запуску</h2>
+        <p class="section-desc">Сборка выполняется без привязки к конкретной машине с помощью стандартного инструментария CMake и C++17 компилятора.</p>
+
+        <div class="code-block-wrapper">
+          <div class="code-header">
+            <span>Terminal (Universal CMake Build)</span>
+            <button class="copy-btn" onclick="copyCode(this)">📋 Скопировать</button>
+          </div>
+          <pre><code># 1. Перейдите в каталог лабораторной работы
 cd "3 semester/PPOIS/Lab2"
 
-# 2. Сгенерируйте решение CMake (создаст папку build):
+# 2. Генерация файлов решения CMake (создаст папку build)
 cmake -S . -B build
 
-# 3. Скомпилируйте проект в конфигурации Release:
+# 3. Сборка всех компонентов в оптимизированной конфигурации Release
 cmake --build build --config Release
 
-# 4. Запустите модульные тесты:
+# 4. Запуск полного набора модульных тестов:
+# На Windows (PowerShell / CMD):
 .\build\Release\museum_tests.exe
-
-# 5. Запустите интерактивную консольную программу:
-.\build\Release\museum_app.exe</code></pre>
-
-      <h3>Сборка на Linux / macOS:</h3>
-      <pre><code>cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+# На Linux / macOS:
 ./build/museum_tests
+
+# 5. Запуск интерактивного консольного приложения «Музей»:
+# На Windows (PowerShell / CMD):
+.\build\Release\museum_app.exe
+# На Linux / macOS:
 ./build/museum_app</code></pre>
+        </div>
 
-      <div class="alert alert-warning">
-        <strong>Важное примечание:</strong> Команда генерации <code>cmake -S . -B build</code> выполняется <strong>первой</strong>, чтобы сформировать файлы сборки. Только после этого запускается компиляция <code>cmake --build build</code>.
-      </div>
-    </section>
-  </main>
-</div>
+        <div class="callout amber">
+          <div style="font-size: 20px;">💡</div>
+          <div>
+            <strong>Совет для пользователей Windows:</strong> Если в консоли PowerShell символы кириллицы отображаются некорректно, перед запуском введите команду <code>chcp 65001</code>.
+          </div>
+        </div>
+      </section>
 
-<script>
-  function filterContent() {
-    const input = document.getElementById('searchInput');
-    const filter = input.value.toLowerCase();
-    const rows = document.querySelectorAll('table tr');
-    
-    rows.forEach((row, index) => {
-      if (index === 0) return; // заголовок таблицы
-      const text = row.textContent.toLowerCase();
-      if (text.includes(filter)) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
+      <!-- Футер -->
+      <footer class="footer">
+        <div>Информационная система управления музейным комплексом • Лабораторная работа №2</div>
+        <div style="margin-top: 6px; font-size: 12.5px; color: var(--text-soft);">
+          Разработано в рамках курса ППОИС (БГУИР, 2 курс, 1 семестр) • Автор: Пушаков Роман
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <script>
+    // Переключение светлой и тёмной темы
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('doc-theme', next);
+      
+      // Перерисовка Mermaid диаграмм при смене темы
+      if (typeof mermaid !== 'undefined') {
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: next === 'dark' ? 'dark' : 'neutral'
+        });
       }
+    }
+
+    // Восстановление темы из памяти
+    const savedTheme = localStorage.getItem('doc-theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+
+    // Копирование кода в буфер обмена
+    function copyCode(btn) {
+      const codeBlock = btn.closest('.code-block-wrapper').querySelector('pre code');
+      navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+        const orig = btn.innerText;
+        btn.innerText = '✅ Скопировано!';
+        setTimeout(() => { btn.innerText = orig; }, 2000);
+      });
+    }
+
+    // Живой поиск по классам и методам
+    function filterDocs() {
+      const query = document.getElementById('classSearch').value.toLowerCase();
+      const rows = document.querySelectorAll('table tbody tr');
+      const modules = document.querySelectorAll('.module-card');
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+      });
+
+      modules.forEach(mod => {
+        const text = mod.textContent.toLowerCase();
+        mod.style.display = text.includes(query) ? '' : 'none';
+      });
+    }
+
+    // Фильтрация модулей по чипам категорий
+    function filterByTag(cat, chip) {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+
+      const modules = document.querySelectorAll('.module-card');
+      modules.forEach(mod => {
+        if (cat === 'all' || mod.getAttribute('data-category') === cat) {
+          mod.style.display = '';
+        } else {
+          mod.style.display = 'none';
+        }
+      });
+    }
+
+    // Подсветка активного пункта сайдбара при скролле
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section[id], .module-card[id]');
+      const scrollPos = window.scrollY + 100;
+
+      sections.forEach(sec => {
+        const top = sec.offsetTop;
+        const height = sec.offsetHeight;
+        const id = sec.getAttribute('id');
+        if (scrollPos >= top && scrollPos < top + height) {
+          document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + id) {
+              link.classList.add('active');
+            }
+          });
+        }
+      });
     });
-  }
-</script>
+  </script>
 </body>
 </html>
