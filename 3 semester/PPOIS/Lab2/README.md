@@ -794,31 +794,47 @@ classDiagram
 
 ## 10. Сборка и запуск проекта
 
-### Сборка на Windows (PowerShell + Visual Studio CMake)
+Проект является кроссплатформенным и собирается при помощи стандартного CMake и любого компилятора с поддержкой стандарта C++17 (MSVC 2019/2022/2026, GCC 9+, Clang 10+).
 
-```powershell
-# 1. Включение кодировки UTF-8 в консоли
-chcp 65001
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+### Сборка и запуск через CMake (универсально для любой ОС)
 
-# 2. Определение пути к CMake
-$cmake = "C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe"
+```bash
+# 1. Перейдите в корневую директорию проекта (Lab2)
+cd "3 semester/PPOIS/Lab2"
 
-# 3. Переход в папку лабораторной
-cd "C:\Users\Рома\Desktop\Универ\ППОИС\Lab2"
+# 2. Генерация файлов сборки CMake
+cmake -S . -B build
 
-# 4. Генерация и компиляция проекта
-& $cmake -S . -B build
-& $cmake --build build --config Release
-
-# 5. Запуск всех 32 модульных тестов
-.\build\Release\museum_tests.exe
-
-# 6. Запуск интерактивной программы
-.\build\Release\museum_app.exe
+# 3. Компиляция проекта (Release-конфигурация)
+cmake --build build --config Release
 ```
 
-### Сборка на Linux / macOS (Make / CMake)
+#### Запуск модульных тестов:
+```bash
+# Windows (PowerShell / CMD):
+.\build\Release\museum_tests.exe
+
+# Linux / macOS:
+./build/museum_tests
+```
+
+#### Запуск консольного приложения Музея:
+```bash
+# Windows (PowerShell / CMD):
+.\build\Release\museum_app.exe
+
+# Linux / macOS:
+./build/museum_app
+```
+
+> **Совет для пользователей Windows:**
+> Если в терминале PowerShell кириллические символы отображаются некорректно, выполните перед запуском:
+> ```powershell
+> chcp 65001
+> ```
+> Если утилита `cmake` не добавлена в системный `PATH`, команду можно выполнять из **Developer PowerShell for VS** или указать прямой путь к установленному `cmake.exe`.
+
+### Сборка на Linux / macOS через Makefile
 
 ```bash
 # Сборка приложения и запуск тестов
